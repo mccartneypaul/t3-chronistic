@@ -2,9 +2,9 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
-import { api } from "@component/utils/api";
+import { api } from "@chronistic/utils/api";
 
-import "@component/styles/globals.css";
+import "@chronistic/styles/globals.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

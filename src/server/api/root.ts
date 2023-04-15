@@ -1,5 +1,5 @@
-import { createTRPCRouter } from "@component/server/api/trpc";
-import { exampleRouter } from "@component/server/api/routers/example";
+import { createTRPCRouter } from "@chronistic/server/api/trpc";
+import { exampleRouter } from "@chronistic/server/api/routers/example";
 
 /**
  * This is the primary router for your server.

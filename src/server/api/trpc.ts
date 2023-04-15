@@ -17,8 +17,8 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
-import { getServerAuthSession } from "@component/server/auth";
-import { prisma } from "@component/server/db";
+import { getServerAuthSession } from "@chronistic/server/auth";
+import { prisma } from "@chronistic/server/db";
 
 type CreateContextOptions = {
   session: Session | null;

@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-} from "@component/server/api/trpc";
+} from "@chronistic/server/api/trpc";
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure

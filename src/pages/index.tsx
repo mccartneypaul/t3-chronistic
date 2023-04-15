@@ -3,7 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { api } from "@component/utils/api";
+import { api } from "@chronistic/utils/api";
+import OverviewMap from "@chronistic/components/overview-map"
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -44,6 +45,8 @@ const Home: NextPage = () => {
               </div>
             </Link>
           </div>
+          <Link href="/overview">Overview map
+          </Link>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}

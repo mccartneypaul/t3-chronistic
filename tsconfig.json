@@ -18,7 +18,7 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@component/*": ["./src/*"]
+      "@chronistic/*": ["./src/*"]
     }
   },
   "include": [
