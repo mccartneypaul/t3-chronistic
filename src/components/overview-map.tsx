@@ -1,17 +1,19 @@
-import { NextComponentType, NextPage } from 'next'
 import Image from 'next/image'
 
-const OverviewMap: unknown = () => {
-    return <div className="flex flex-col">
-        <div className="self-center flex h-[75vw]">
-            <Image className="object-contain"
-                    src="/TestWorldMap.png"
-                    alt="map"
-                    fill 
-                    quality="100"/>
-        </div>
+const mapImage = "/TestWorldMap.png"
 
-    </div>;
+const OverviewMap = () => {
+    return (
+        <div className="relative aspect-auto h-[40vw]">
+            <Image
+            className="object-contain"
+            src={mapImage}
+            alt="map"
+            quality="100"
+            fill
+            />
+        </div>
+    );
 };
 
 export default OverviewMap;
