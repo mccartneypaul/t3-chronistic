@@ -1,54 +1,40 @@
-// import { useState } from 'react';
-// import Button from '@mui/material/Button';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import { styled } from '@mui/material/styles';
+import Draggable, { type DraggableEvent } from "react-draggable";
+import React, { useState, useRef } from "react";
+import AdbIcon from '@mui/icons-material/Adb';
+import { useModal } from '../contexts/modal-context';
 
-// const DraggableDiv = styled('div')(({ top, left, width, height }) => ({
-//     position: 'absolute',
-//     top: `${top}px`,
-//     left: `${left}px`,
-//     width: `${width}px`,
-//     height: `${height}px`,
-//   }));
+interface Position {
+  x: number;
+  y: number;
+}
 
-// export default function EventIcon({ top, left, width, height }) {
-//     const [open, setOpen] = useState(false);
-//     const [name, setName] = useState('test');
-//     const [animal, setAnimal] = useState('test armidillo');
+interface EventIconProps {
+  initialPosition?: Position;
+}
 
-//     const handleClickOpen = () => {
-//         setOpen(true);
-//     };
+function EventIcon({ initialPosition = { x: 0, y: 0 }}: EventIconProps) {
+  const [position, setPosition] = useState(initialPosition);
+  const isDraggingRef = useRef(false);
+  const { openModal } = useModal();
 
-//     const handleClose = () => {
-//         setOpen(false);
-//     };
+  const onDrag = (e: DraggableEvent, data: Position) => {
+    isDraggingRef.current = true;
+    setPosition({ x: data.x, y: data.y });
+  };
 
-//     return (
-//         <>
-//         <DraggableDiv top={top} left={left} width={width} height={height}>
-//             <Button onClick={handleClickOpen}>
-//             <HomeIcon />
-//             </Button>
-//         </DraggableDiv>
-//         <Dialog open={open} onClose={handleClose}>
-//             <DialogTitle>Event Overview</DialogTitle>
-//             <DialogContent>
-//             <DialogContentText>
-//                 Name: {name}
-//             </DialogContentText>
-//             <DialogContentText>
-//                 Animal: {animal}
-//             </DialogContentText>
-//             </DialogContent>
-//             <DialogActions>
-//             <Button onClick={handleClose}>Close</Button>
-//             </DialogActions>
-//         </Dialog>
-//         </>
-//     );
-// }
+  const onStop = () => {
+    isDraggingRef.current = false;
+  };
+  
+  return (
+    <Draggable onStop={onStop} onDrag={onDrag}>
+      <div className="absolute" style={{top: `${initialPosition.x}px`, left: `${initialPosition.y}px`}}>
+        <button onClick={openModal}>
+          <AdbIcon />
+        </button>
+      </div>
+    </Draggable>
+  );
+}
+
+export default EventIcon;

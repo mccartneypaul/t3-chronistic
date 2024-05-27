@@ -25,43 +25,49 @@ function valuetext(value: number) {
 }
 
 const Timeline = () => {
-    return <>
-        <div>
-            <span className="flex items-center">
-                <span className="text-lg font-medium not-italic tracking-wide mr-1 ml-1">Day</span>
-                <Slider
-                    aria-label="Always visible"
-                    defaultValue={80}
-                    getAriaValueText={valuetext}
-                    step={10}
-                    marks={marks}
-                    valueLabelDisplay="on"
-                />
-            </span>
-            <span className="flex items-center">
-                <span className="text-lg font-medium not-italic tracking-wide mr-1 ml-1">Time</span>
-                <Slider
-                    aria-label="Always visible"
-                    defaultValue={80}
-                    getAriaValueText={valuetext}
-                    step={10}
-                    marks={marks}
-                    valueLabelDisplay="on"
-                />
-            </span>
-            <span className="flex items-center">
-                <span className="text-lg font-medium not-italic tracking-wide mr-1 ml-1">Epoch</span>
-                <Slider
-                    aria-label="Always visible"
-                    defaultValue={80}
-                    getAriaValueText={valuetext}
-                    step={10}
-                    marks={marks}
-                    valueLabelDisplay="on"
-                />
-            </span>
+  return (
+    <div className="flex flex-col w-full box-border">
+      <div className="flex justify-center w-full mb-0 box-border">
+        <span className="text-2xl text-white font-bold w-8 tracking-wide mx-1">Day</span>
+        <div className="flex-1 mx-12 max-w-full">
+          <Slider
+            aria-label="Always visible"
+            defaultValue={80}
+            getAriaValueText={valuetext}
+            step={10}
+            marks={marks}
+            valueLabelDisplay="on"
+          />
         </div>
-    </>;
+      </div>
+      <div className="flex justify-center w-full mb-0 box-border">
+        <span className="text-2xl text-white font-bold w-8 tracking-wide mx-1">Time</span>
+        <div className="flex-1 mx-12 max-w-full">
+          <Slider
+            aria-label="Always visible"
+            defaultValue={80}
+            getAriaValueText={valuetext}
+            step={10}
+            marks={marks}
+            valueLabelDisplay="on"
+          />
+        </div>
+      </div>
+      <div className="flex justify-center w-full box-border">
+        <span className="text-2xl text-white font-bold w-8 tracking-wide mx-1">Epoch</span>
+        <div className="flex-1 mx-12 max-w-full">
+          <Slider
+            aria-label="Always visible"
+            defaultValue={80}
+            getAriaValueText={valuetext}
+            step={10}
+            marks={marks}
+            valueLabelDisplay="on"
+          />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Timeline;
