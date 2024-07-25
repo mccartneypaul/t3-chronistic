@@ -1,7 +1,7 @@
 import Draggable, { type DraggableEvent } from "react-draggable";
 import React, { useState, useRef } from "react";
+import type {Dispatch, SetStateAction} from "react";
 import AdbIcon from '@mui/icons-material/Adb';
-import { useModal } from '../contexts/modal-context';
 
 interface Position {
   x: number;
@@ -10,12 +10,12 @@ interface Position {
 
 interface EventIconProps {
   initialPosition?: Position;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-function EventIcon({ initialPosition = { x: 0, y: 0 }}: EventIconProps) {
+function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen}: EventIconProps) {
   const [position, setPosition] = useState(initialPosition);
   const isDraggingRef = useRef(false);
-  const { openModal } = useModal();
 
   const onDrag = (e: DraggableEvent, data: Position) => {
     isDraggingRef.current = true;
@@ -29,7 +29,7 @@ function EventIcon({ initialPosition = { x: 0, y: 0 }}: EventIconProps) {
   return (
     <Draggable onStop={onStop} onDrag={onDrag}>
       <div className="absolute" style={{top: `${initialPosition.x}px`, left: `${initialPosition.y}px`}}>
-        <button onClick={openModal}>
+        <button onClick={() => setOpen(true)}>
           <AdbIcon />
         </button>
       </div>

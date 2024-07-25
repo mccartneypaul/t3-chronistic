@@ -1,10 +1,18 @@
 import Image from 'next/image'
 import EventIcon from './event-icon';
-import { ModalProvider } from '../contexts/modal-context';
+import EventOverview from './event-overview';
+import React, { Dispatch, SetStateAction } from 'react';
 
 const mapImage = "/TestWorldMap.png"
 
-const OverviewMap = () => {
+export interface modalOpenProps {
+    isOpen: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+}
+
+function OverviewMap() {
+    const [isOpen, setOpen] = React.useState(false);
+
     return (
         <>
             <div className="relative aspect-auto h-[37vw]">
@@ -16,11 +24,10 @@ const OverviewMap = () => {
                 fill
                 />
             </div>
-            <ModalProvider>
-                <EventIcon initialPosition={{x: 450, y:650}} />
-            </ModalProvider>
+            <EventOverview isOpen={isOpen} setOpen={setOpen}/ >
+            <EventIcon initialPosition={{x: 450, y:650}} setOpen={setOpen} />
         </>
     );
-};
+}
 
 export default OverviewMap;
