@@ -1,14 +1,9 @@
 import Image from 'next/image'
 import EventIcon from './event-icon';
 import EventOverview from './event-overview';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 const mapImage = "/TestWorldMap.png"
-
-export interface modalOpenProps {
-    isOpen: boolean
-    setOpen: Dispatch<SetStateAction<boolean>>
-}
 
 function OverviewMap() {
     const [isOpen, setOpen] = React.useState(false);
