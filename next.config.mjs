@@ -7,7 +7,15 @@
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
+  // Client side source map
+  productionBrowserSourceMaps: true,
+  // Server side source map
+  webpack: (config, {isServer}) => {
+    if (isServer) {
+        config.devtool = 'source-map'
+    }
+    return config
+  },
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
    * must comment the below `i18n` config out.
