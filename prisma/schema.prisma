@@ -20,7 +20,9 @@ model Example {
     updatedAt DateTime @updatedAt
 }
 
+//------------------------
 // Necessary for Next auth
+//------------------------
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -63,4 +65,27 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+//------------------------
+// Chronistic objects
+//------------------------
+model Map {
+    id          String      @id @default(cuid())
+    name        String
+    filePath    String      @unique
+    constructs  Construct[]
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+}
+
+model Construct {
+    id          String      @id @default(cuid())
+    name        String
+    map         Map         @relation(fields: [mapId], references: [id])
+    mapId       String
+    posX        Int
+    posY        Int
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
 }
