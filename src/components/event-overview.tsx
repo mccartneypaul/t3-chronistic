@@ -55,12 +55,14 @@ export default function EventOverview(props: ModalOpenProps) {
 
                 <span className="flex grow shrink basis-1/2 flex-col">
                   <Typography variant="h6">Associated Entities</Typography>
-                  <p>Event 1</p>
-                  <p>Event 2</p>
-                  <p>Event 3</p>
-                  <p>Event 4</p>
-                  <p>Event 5</p>
-                  <p>Event 6</p>
+                  <ul>
+                    <li>Event 1</li>
+                    <li>Event 2</li>
+                    <li>Event 3</li>
+                    <li>Event 4</li>
+                    <li>Event 5</li>
+                    <li>Event 6</li>
+                  </ul>
                   <Button variant="contained" className="self-start mb-2" color="primary">Add Entity</Button>
                 </span>
               </div>
