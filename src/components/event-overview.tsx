@@ -1,28 +1,9 @@
 "use client";
-import {useSearchParams, usePathname} from "next/navigation";
-import Link from "next/link";
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
+import Dialog from '@mui/material/Dialog';
 import type { Dispatch, SetStateAction } from "react";
-import { Divider, Typography } from "@mui/material";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  minWidth: '500px',
-  maxWidth: '750px',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
-};
+import { DialogActions, DialogContent, DialogTitle, Divider, Typography } from "@mui/material";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -33,15 +14,19 @@ export default function EventOverview(props: ModalOpenProps) {
 
   return (
     <>
-        <Modal
+        <Dialog
           open={props.isOpen}
+          scroll="paper"
           onClose={() => props.setOpen(false)}
           aria-labelledby="child-modal-title"
+          className="min-w-500 max-w-750"
+          fullWidth={true}
+          maxWidth="md"
         >
-          <Box sx={{ ...style}}>
-            <Typography id="event-overview-modal-title" variant="h5" component="h2">
-              Event Overview
-            </Typography>
+          <DialogTitle id="scroll-dialog-title">
+            <Typography id="event-overview-modal-title" variant="h5" component="h2">Event Overview </Typography>
+          </DialogTitle>
+          <DialogContent dividers={true}>
             <div id="event-overview-modal-content">
               <div className="flex flex-row justify-between">
                 <span>
@@ -79,17 +64,13 @@ export default function EventOverview(props: ModalOpenProps) {
                   <Button variant="contained" className="self-start mb-2" color="primary">Add Entity</Button>
                 </span>
               </div>
-
-              <Divider variant="middle" className="mb-2"/>
-
-              <div className="flex flex-row justify-between">
-                <Button variant="contained" color="primary">Picture File Notes</Button>
-                <Button variant="contained" color="primary">Location Data</Button>
-              </div>
-
             </div>
-          </Box>
-        </Modal>
+          </DialogContent>
+          <DialogActions className="flex flex-row justify-between pl-3 pr-3 pb-3">
+            <Button variant="contained" color="primary">Picture File Notes</Button>
+            <Button variant="contained" color="primary">Location Data</Button>
+          </DialogActions>
+        </Dialog>
     </>
   );
 }
