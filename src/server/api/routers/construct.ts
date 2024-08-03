@@ -14,11 +14,29 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  getByMap: publicProcedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.construct.findMany({
-        where: {
-        mapId: input,
-        },
+  getByMap: publicProcedure
+    .input(z.string())
+    .query(({ ctx, input }) => {
+      return ctx.prisma.construct.findMany({
+          where: {
+          mapId: input,
+          },
     });
+  }),
+
+  constructCreate: publicProcedure
+    .input(z.object({
+      data: z.object({
+        name: z.string(),
+        description: z.string(),
+        mapId: z.string(),
+        posX: z.number(),
+        posY: z.number(),
+      })
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // Create a new construct in the database
+      const construct = await ctx.prisma.construct.create(input);
+      return construct;
   }),
 });
