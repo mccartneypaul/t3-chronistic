@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
-import EventIcon from './event-icon';
-import EventOverview from './event-overview';
+import ConstructIcon from './construct-icon';
+import ConstructOverview from './construct-overview';
 import React from 'react';
 import { useRouter } from "next/router";
 import { api } from "../utils/api";
@@ -27,10 +27,10 @@ function OverviewMap() {
                 fill
                 />
             </div>
-            <EventOverview isOpen={isOpen} setOpen={setOpen} getConstruct={getConstruct} setConstruct={setConstruct}/ >
+            <ConstructOverview isOpen={isOpen} setOpen={setOpen} getConstruct={getConstruct} setConstruct={setConstruct}/ >
 
             {constructQuery.data?.map((construct) => (
-                <EventIcon
+                <ConstructIcon
                 key={construct.id}
                 initialPosition={{x: construct.posX, y:construct.posY}}
                 setOpen={setOpen}

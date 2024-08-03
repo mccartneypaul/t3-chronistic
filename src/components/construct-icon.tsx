@@ -10,14 +10,14 @@ interface Position {
   y: number;
 }
 
-interface EventIconProps {
+interface ConstructIconProps {
   initialPosition?: Position;
   setOpen: Dispatch<SetStateAction<boolean>>;
   construct: Construct;
   setConstruct: Dispatch<SetStateAction<Construct>>;
 }
 
-function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, setConstruct}: EventIconProps) {
+function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, setConstruct}: ConstructIconProps) {
   const [position, setPosition] = useState(initialPosition);
   const isDraggingRef = useRef(false);
 
@@ -47,4 +47,4 @@ function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, setCo
   );
 }
 
-export default EventIcon;
+export default ConstructIcon;

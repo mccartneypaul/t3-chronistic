@@ -13,7 +13,7 @@ export interface ModalOpenProps {
   setConstruct: Dispatch<SetStateAction<Construct>>;
 }
 
-export default function EventOverview(props: ModalOpenProps) {
+export default function ConstructOverview(props: ModalOpenProps) {
   const construct = props.getConstruct;
 
   return (
@@ -29,10 +29,10 @@ export default function EventOverview(props: ModalOpenProps) {
         >
           <Suspense fallback={<p>Loading feed...</p>}>
             <DialogTitle id="scroll-dialog-title">
-              <Typography id="event-overview-modal-title" variant="h5" component="h2">Event Overview - {construct.name}</Typography>
+              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {construct.name}</Typography>
             </DialogTitle>
             <DialogContent dividers={true}>
-              <div id="event-overview-modal-content">
+              <div id="construct-overview-modal-content">
                 <div className="flex flex-row justify-between">
                   <span>
                     <div>Time/Date</div>
@@ -60,12 +60,12 @@ export default function EventOverview(props: ModalOpenProps) {
                   <span className="flex grow shrink basis-1/2 flex-col">
                     <Typography variant="h6">Associated Entities</Typography>
                     <ul>
-                      <li>Event 1</li>
-                      <li>Event 2</li>
-                      <li>Event 3</li>
-                      <li>Event 4</li>
-                      <li>Event 5</li>
-                      <li>Event 6</li>
+                      <li>Construct 1</li>
+                      <li>Construct 2</li>
+                      <li>Construct 3</li>
+                      <li>Construct 4</li>
+                      <li>Construct 5</li>
+                      <li>Construct 6</li>
                     </ul>
                     <Button variant="contained" className="self-start mb-2" color="primary">Add Entity</Button>
                   </span>
