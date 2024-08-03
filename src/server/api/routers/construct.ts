@@ -39,4 +39,17 @@ export const constructRouter = createTRPCRouter({
       const construct = await ctx.prisma.construct.create(input);
       return construct;
   }),
+
+  descriptionPatch: publicProcedure
+    .input(z.object({
+      id: z.string(),
+      description: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const construct = await ctx.prisma.construct.update({
+        where: {id: input.id},
+        data: {description: input.description}
+      });
+      return construct;
+  }),
 });

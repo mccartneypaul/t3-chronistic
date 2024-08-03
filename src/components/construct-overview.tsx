@@ -3,8 +3,9 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { Suspense, type Dispatch, type SetStateAction } from "react";
-import { DialogActions, DialogContent, DialogTitle, Divider, Typography } from "@mui/material";
+import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography } from "@mui/material";
 import type { Construct } from '@prisma/client';
+import { api } from "../utils/api";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export interface ModalOpenProps {
 
 export default function ConstructOverview(props: ModalOpenProps) {
   const construct = props.getConstruct;
+  const mutateDescription = api.construct.descriptionPatch.useMutation();
+  // .mutate({id: construct.id, description: construct.description})
 
   return (
     <>
@@ -27,7 +30,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
           fullWidth={true}
           maxWidth="md"
         >
-          <Suspense fallback={<p>Loading feed...</p>}>
+          <Suspense fallback={<p>Loading...</p>}>
             <DialogTitle id="scroll-dialog-title">
               <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {construct.name}</Typography>
             </DialogTitle>
@@ -50,9 +53,18 @@ export default function ConstructOverview(props: ModalOpenProps) {
                   <span className="flex grow shrink basis-1/2 flex-col">
                     <Typography variant="h6">Description</Typography>
                     <p>
-                      {construct.description}
+                      <TextField
+                        id="standard-multiline-static"
+                        multiline
+                        fullWidth
+                        rows={10}
+                        variant="standard"
+                        value={construct.description}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          // setName(event.target.value);
+                        }}
+                      />
                     </p>
-                    <Button variant="contained" className="self-end mb-2" color="primary">Edit</Button>
                   </span>
 
                   <Divider className="ml-10 mr-10" flexItem orientation="vertical"/>
