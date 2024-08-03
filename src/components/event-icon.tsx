@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import type {Dispatch, SetStateAction} from "react";
 import AdbIcon from '@mui/icons-material/Adb';
 import { IconButton } from "@mui/material";
+import type { Construct } from "@prisma/client";
 
 interface Position {
   x: number;
@@ -12,9 +13,11 @@ interface Position {
 interface EventIconProps {
   initialPosition?: Position;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  construct: Construct;
+  setConstruct: Dispatch<SetStateAction<Construct>>;
 }
 
-function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen}: EventIconProps) {
+function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, setConstruct}: EventIconProps) {
   const [position, setPosition] = useState(initialPosition);
   const isDraggingRef = useRef(false);
 
@@ -30,7 +33,13 @@ function EventIcon({ initialPosition = { x: 0, y: 0 }, setOpen}: EventIconProps)
   return (
     <Draggable onStop={onStop} onDrag={onDrag}>
       <div className="absolute" style={{top: `${initialPosition.x}px`, left: `${initialPosition.y}px`}}>
-        <IconButton color='secondary' onDoubleClick={() => setOpen(true)}> 
+        <IconButton
+          color='secondary'
+          onDoubleClick={() => {
+            setConstruct(construct);
+            setOpen(true);
+          }
+        }> 
           <AdbIcon />
         </IconButton>
       </div>

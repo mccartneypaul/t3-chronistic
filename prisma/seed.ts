@@ -17,6 +17,7 @@ async function main() {
       create: {
           id: "alsototesacuid",
           name: "Explorer Jeff",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nisi urna, aliquam nec bibendum eu, ornare a leo. Maecenas facilisis nisi quis posuere euismod. Pellentesque urna arcu, congue vitae nisl eu, tincidunt suscipit quam. Phasellus eget velit ante. In eu nulla ac purus iaculis commodo. Suspendisse ultrices ut sem nec euismod. Donec efficitur eros eu sollicitudin luctus. Nulla porta efficitur elit, et luctus turpis gravida dapibus. Maecenas pharetra magna nunc, vel consectetur odio aliquam ac. Cras auctor purus a enim luctus suscipit. Aliquam ultricies, libero at iaculis iaculis, nibh est hendrerit purus, id dignissim neque magna ut ligula. Vestibulum sit amet velit porta nisi ultrices condimentum ac quis augue. Nam id nibh viverra, euismod nunc a, iaculis mi. Curabitur auctor, ex eget interdum imperdiet, ipsum ligula mattis nisl, et venenatis ex purus pretium eros. Nulla sagittis pulvinar maximus.",
           mapId: "totesacuid",
           posX: 450,
           posY: 650,
@@ -29,6 +30,7 @@ async function main() {
       create: {
           id: "anothercuid",
           name: "Explorer Dan",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nisi urna, aliquam nec bibendum eu, ornare a leo. Maecenas facilisis nisi quis posuere euismod. Pellentesque urna arcu, congue vitae nisl eu, tincidunt suscipit quam. Phasellus eget velit ante. In eu nulla ac purus iaculis commodo. Suspendisse ultrices ut sem nec euismod. Donec efficitur eros eu sollicitudin luctus. Nulla porta efficitur elit, et luctus turpis gravida dapibus. Maecenas pharetra magna nunc, vel consectetur odio aliquam ac. Cras auctor purus a enim luctus suscipit. Aliquam ultricies, libero at iaculis iaculis, nibh est hendrerit purus, id dignissim neque magna ut ligula. Vestibulum sit amet velit porta nisi ultrices condimentum ac quis augue. Nam id nibh viverra, euismod nunc a, iaculis mi. Curabitur auctor, ex eget interdum imperdiet, ipsum ligula mattis nisl, et venenatis ex purus pretium eros. Nulla sagittis pulvinar maximus.",
           mapId: "totesacuid",
           posX: 425,
           posY: 610,

@@ -82,6 +82,7 @@ model Map {
 model Construct {
     id          String      @id @default(cuid())
     name        String
+    description String
     map         Map         @relation(fields: [mapId], references: [id])
     mapId       String
     posX        Int
