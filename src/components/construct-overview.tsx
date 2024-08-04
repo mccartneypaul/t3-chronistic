@@ -1,9 +1,7 @@
 "use client";
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { Suspense, type Dispatch, type SetStateAction } from "react";
-import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography } from "@mui/material";
+import { Suspense, useState, useEffect, type Dispatch, type SetStateAction } from "react";
+import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography, Button, Dialog } from "@mui/material";
 import type { Construct } from '@prisma/client';
 import { api } from "../utils/api";
 
@@ -15,9 +13,33 @@ export interface ModalOpenProps {
 }
 
 export default function ConstructOverview(props: ModalOpenProps) {
-  const construct = props.getConstruct;
   const mutateDescription = api.construct.descriptionPatch.useMutation();
-  // .mutate({id: construct.id, description: construct.description})
+  const [tempDescription, setTempDescription] = useState("");
+  
+  useEffect(() => {
+    setTempDescription(props.getConstruct.description);
+  }, [props.getConstruct.id]);
+
+  useEffect(() => {
+    async function asyncMutate() {
+        return await mutateDescription.mutateAsync(
+          {
+            id: props.getConstruct.id,
+            description: tempDescription
+          });
+      }
+      
+      const timeout = setTimeout(() => {
+        asyncMutate().then(r => props.setConstruct(r)).catch(console.error);
+      }, 300);
+
+      // If the hook is called again, cancel the previous timeout
+      // This creates a debounce instead of a delay
+      return () => clearTimeout(timeout);
+    },
+    // Run the hook every time the user makes a keystroke
+    [tempDescription]
+  );
 
   return (
     <>
@@ -32,7 +54,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
         >
           <Suspense fallback={<p>Loading...</p>}>
             <DialogTitle id="scroll-dialog-title">
-              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {construct.name}</Typography>
+              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {props.getConstruct.name}</Typography>
             </DialogTitle>
             <DialogContent dividers={true}>
               <div id="construct-overview-modal-content">
@@ -59,10 +81,8 @@ export default function ConstructOverview(props: ModalOpenProps) {
                         fullWidth
                         rows={10}
                         variant="standard"
-                        value={construct.description}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          // setName(event.target.value);
-                        }}
+                        value={tempDescription}
+                        onChange={({ target }) => setTempDescription(target.value)}
                       />
                     </p>
                   </span>
