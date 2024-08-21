@@ -3,6 +3,8 @@ import * as React from 'react';
 import { Suspense, useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography, Button, Dialog } from "@mui/material";
 import { useConstructContext } from '../providers/construct-store-provider'
+import { api } from "../utils/api";
+import { mapFromApi } from '@chronistic/stores/construct';
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ export interface ModalOpenProps {
 }
 
 export default function ConstructOverview(props: ModalOpenProps) {
+  const mutateDescription = api.construct.descriptionPatch.useMutation();
   const [tempDescription, setTempDescription] = useState("");
   const { activeConstruct, setConstruct } = useConstructContext(
     (state) => state,
@@ -22,15 +25,22 @@ export default function ConstructOverview(props: ModalOpenProps) {
   }, [activeConstruct?.id]);
 
   useEffect(() => {
-    function updateDescription() {
-      if (activeConstruct) {
-        setConstruct(activeConstruct.id, { description: tempDescription });
-      }
-    }
+    async function asyncMutate() {
+      if (!activeConstruct) { return; }
+
+      setConstruct(activeConstruct.id, { description: tempDescription });
       
+      return await mutateDescription.mutateAsync(
+        {
+          id: activeConstruct.id,
+          description: tempDescription
+        });
+    }
+
     const timeout = setTimeout(() => {
-      updateDescription();
+      asyncMutate().then(r => {if(activeConstruct && r) {setConstruct(activeConstruct?.id, mapFromApi(r))}}).catch(console.error);
     }, 300);
+    
 
     // If the hook is called again, cancel the previous timeout
     // This creates a debounce instead of a delay
