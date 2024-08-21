@@ -2,40 +2,39 @@
 import * as React from 'react';
 import { Suspense, useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography, Button, Dialog } from "@mui/material";
-import type { Construct } from '@prisma/client';
-import { api } from "../utils/api";
+import { useConstructContext } from '../providers/construct-store-provider'
 
 export interface ModalOpenProps {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  getConstruct: Construct;
-  setConstruct: Dispatch<SetStateAction<Construct>>;
 }
 
 export default function ConstructOverview(props: ModalOpenProps) {
-  const mutateDescription = api.construct.descriptionPatch.useMutation();
   const [tempDescription, setTempDescription] = useState("");
+  const { activeConstruct, setConstruct } = useConstructContext(
+    (state) => state,
+  )
   
   useEffect(() => {
-    setTempDescription(props.getConstruct.description);
-  }, [props.getConstruct.id]);
+    if (activeConstruct) {
+      setTempDescription(activeConstruct.description);
+    }
+  }, [activeConstruct?.id]);
 
   useEffect(() => {
-    async function asyncMutate() {
-        return await mutateDescription.mutateAsync(
-          {
-            id: props.getConstruct.id,
-            description: tempDescription
-          });
+    function updateDescription() {
+      if (activeConstruct) {
+        setConstruct(activeConstruct.id, { description: tempDescription });
       }
+    }
       
-      const timeout = setTimeout(() => {
-        asyncMutate().then(r => props.setConstruct(r)).catch(console.error);
-      }, 300);
+    const timeout = setTimeout(() => {
+      updateDescription();
+    }, 300);
 
-      // If the hook is called again, cancel the previous timeout
-      // This creates a debounce instead of a delay
-      return () => clearTimeout(timeout);
+    // If the hook is called again, cancel the previous timeout
+    // This creates a debounce instead of a delay
+    return () => clearTimeout(timeout);
     },
     // Run the hook every time the user makes a keystroke
     [tempDescription]
@@ -54,7 +53,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
         >
           <Suspense fallback={<p>Loading...</p>}>
             <DialogTitle id="scroll-dialog-title">
-              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {props.getConstruct.name}</Typography>
+              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {activeConstruct?.name}</Typography>
             </DialogTitle>
             <DialogContent dividers={true}>
               <div id="construct-overview-modal-content">

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import type {Dispatch, SetStateAction} from "react";
 import AdbIcon from '@mui/icons-material/Adb';
 import { IconButton } from "@mui/material";
-import type { Construct } from "@prisma/client";
+import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 
 interface Position {
   x: number;
@@ -13,13 +13,15 @@ interface Position {
 interface ConstructIconProps {
   initialPosition?: Position;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  construct: Construct;
-  setConstruct: Dispatch<SetStateAction<Construct>>;
+  constructId: string;
 }
 
-function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, setConstruct}: ConstructIconProps) {
+function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId}: ConstructIconProps) {
   const [position, setPosition] = useState(initialPosition);
   const isDraggingRef = useRef(false);
+  const { setActiveConstruct } = useConstructContext(
+    (state) => state,
+  )
 
   const onDrag = (e: DraggableEvent, data: Position) => {
     isDraggingRef.current = true;
@@ -36,7 +38,7 @@ function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, construct, s
         <IconButton
           color='secondary'
           onDoubleClick={() => {
-            setConstruct(construct);
+            setActiveConstruct(constructId);
             setOpen(true);
           }
         }> 

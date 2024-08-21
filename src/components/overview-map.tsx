@@ -1,45 +1,51 @@
-'use client'
 import Image from 'next/image'
 import ConstructIcon from './construct-icon';
 import ConstructOverview from './construct-overview';
-import React from 'react';
-import { useRouter } from "next/router";
-import { api } from "../utils/api";
-import type { Construct, Prisma } from '@prisma/client';
+import React, { Suspense, useContext, useEffect } from 'react';
+import { useConstructContext } from '@chronistic/providers/construct-store-provider'
 
 const mapImage = "/TestWorldMap.png"
 
-function OverviewMap() {
-    const [isOpen, setOpen] = React.useState(false);
-    const [getConstruct, setConstruct] = React.useState({} as Construct);
-    const { query } = useRouter();
-    const hardCodedMapId = "totesacuid"
-    const constructQuery = api.construct.getByMap.useQuery(hardCodedMapId);
+interface OverviewMapProps {
+  mapId: string;
+}
 
-    return (
-        <>
-            <div className="relative aspect-auto h-[37vw]">
-                <Image
-                className="object-contain"
-                src={mapImage}
-                alt="map"
-                quality="100"
-                fill
-                />
-            </div>
-            <ConstructOverview isOpen={isOpen} setOpen={setOpen} getConstruct={getConstruct} setConstruct={setConstruct}/ >
+function OverviewMap({mapId}: OverviewMapProps) {
+  const [isOpen, setOpen] = React.useState(false);
+  const constructs = useConstructContext((state) => state.constructs)
+  const activeConstruct = useConstructContext((state) => state.activeConstruct)
 
-            {constructQuery.data?.map((construct) => (
-                <ConstructIcon
-                key={construct.id}
-                initialPosition={{x: construct.posX, y:construct.posY}}
-                setOpen={setOpen}
-                construct={construct}
-                setConstruct={setConstruct}
-                />
-            ))}
-        </>
-    );
+  useEffect(() => {
+    console.log('OverviewMap re-rendered with constructs:', constructs);
+  }, [constructs]);
+
+  return (
+    <>
+      <div className="relative aspect-auto h-[37vw]">
+        <Image
+        className="object-contain"
+        src={mapImage}
+        alt="map"
+        quality="100"
+        fill
+        />
+      </div>
+      {activeConstruct && <ConstructOverview isOpen={isOpen} setOpen={setOpen}/ >}
+
+
+      {/* This is causing an issue right now where it will replace the data that the child is trying to modify */}
+      {/* Need to modify this so that it uses a context somehow to keep track of the constructs. */}
+      {/* Also, needs to go back and modify that construct in the list of constructs... */}
+      {constructs.map((construct) => (
+        <ConstructIcon
+        key={construct.id}
+        initialPosition={{x: construct.posX, y:construct.posY}}
+        setOpen={setOpen}
+        constructId={construct.id}
+        />
+      ))}
+    </>
+  );
 }
 
 export default OverviewMap;
