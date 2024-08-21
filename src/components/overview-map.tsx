@@ -1,16 +1,12 @@
 import Image from 'next/image'
 import ConstructIcon from './construct-icon';
 import ConstructOverview from './construct-overview';
-import React, { Suspense, useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useConstructContext } from '@chronistic/providers/construct-store-provider'
 
 const mapImage = "/TestWorldMap.png"
 
-interface OverviewMapProps {
-  mapId: string;
-}
-
-function OverviewMap({mapId}: OverviewMapProps) {
+function OverviewMap() {
   const [isOpen, setOpen] = React.useState(false);
   const constructs = useConstructContext((state) => state.constructs)
   const activeConstruct = useConstructContext((state) => state.activeConstruct)
@@ -32,10 +28,6 @@ function OverviewMap({mapId}: OverviewMapProps) {
       </div>
       {activeConstruct && <ConstructOverview isOpen={isOpen} setOpen={setOpen}/ >}
 
-
-      {/* This is causing an issue right now where it will replace the data that the child is trying to modify */}
-      {/* Need to modify this so that it uses a context somehow to keep track of the constructs. */}
-      {/* Also, needs to go back and modify that construct in the list of constructs... */}
       {constructs.map((construct) => (
         <ConstructIcon
         key={construct.id}

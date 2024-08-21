@@ -27,7 +27,7 @@ export default function Overview() {
           {constructs.length > 0 ? (
             <ConstructStoreProvider constructs={constructs}>
               <ResponsiveAppBar />
-              <OverviewMap mapId={hardCodedMapId}/>
+              <OverviewMap/>
               <Timeline />
             </ConstructStoreProvider>
           ) : (

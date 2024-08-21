@@ -14,9 +14,8 @@ export interface ModalOpenProps {
 export default function ConstructOverview(props: ModalOpenProps) {
   const mutateDescription = api.construct.descriptionPatch.useMutation();
   const [tempDescription, setTempDescription] = useState("");
-  const { activeConstruct, setConstruct } = useConstructContext(
-    (state) => state,
-  )
+  const activeConstruct = useConstructContext((state) => state.activeConstruct)
+  const setConstruct = useConstructContext((state) => state.setConstruct)
   
   useEffect(() => {
     if (activeConstruct) {
@@ -27,9 +26,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
   useEffect(() => {
     async function asyncMutate() {
       if (!activeConstruct) { return; }
-
       setConstruct(activeConstruct.id, { description: tempDescription });
-      
       return await mutateDescription.mutateAsync(
         {
           id: activeConstruct.id,
@@ -41,7 +38,6 @@ export default function ConstructOverview(props: ModalOpenProps) {
       asyncMutate().then(r => {if(activeConstruct && r) {setConstruct(activeConstruct?.id, mapFromApi(r))}}).catch(console.error);
     }, 300);
     
-
     // If the hook is called again, cancel the previous timeout
     // This creates a debounce instead of a delay
     return () => clearTimeout(timeout);
