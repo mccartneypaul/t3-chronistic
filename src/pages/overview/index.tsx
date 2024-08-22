@@ -4,7 +4,7 @@ import { ConstructStoreProvider } from "@chronistic/providers/construct-store-pr
 import { api } from "@chronistic/utils/api";
 import { mapFromApi, type StoreConstruct } from "@chronistic/stores/construct";
 import OverviewMap from "@chronistic/components/overview-map";
-import { Suspense, useEffect, useState, startTransition } from 'react';
+import { Suspense, useEffect, useState, startTransition } from "react";
 
 const hardCodedMapId = "totesacuid";
 
@@ -14,7 +14,8 @@ export default function Overview() {
 
   useEffect(() => {
     startTransition(() => {
-      const mappedConstructs = data?.map(construct => mapFromApi(construct)) ?? [];
+      const mappedConstructs =
+        data?.map((construct) => mapFromApi(construct)) ?? [];
       setConstructs(mappedConstructs);
     });
   }, [data]);
@@ -27,7 +28,7 @@ export default function Overview() {
           {constructs.length > 0 ? (
             <ConstructStoreProvider constructs={constructs}>
               <ResponsiveAppBar />
-              <OverviewMap/>
+              <OverviewMap />
               <Timeline />
             </ConstructStoreProvider>
           ) : (
