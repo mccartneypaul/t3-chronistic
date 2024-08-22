@@ -57,8 +57,10 @@ export default function ConstructOverview(props: ModalOpenProps) {
           maxWidth="md"
         >
           <Suspense fallback={<p>Loading...</p>}>
-            <DialogTitle id="scroll-dialog-title">
-              <Typography id="construct-overview-modal-title" variant="h5" component="h2">Construct Overview - {activeConstruct?.name}</Typography>
+            <DialogTitle id="scroll-dialog-title" component="div">
+              <Typography id="construct-overview-modal-title" variant="h5" component="h2">
+                Construct Overview - {activeConstruct?.name}
+              </Typography>
             </DialogTitle>
             <DialogContent dividers={true}>
               <div id="construct-overview-modal-content">
@@ -78,7 +80,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
                 <div className="flex flex-row justify-between">
                   <span className="flex grow shrink basis-1/2 flex-col">
                     <Typography variant="h6">Description</Typography>
-                    <p>
+                    <div>
                       <TextField
                         id="standard-multiline-static"
                         multiline
@@ -88,7 +90,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
                         value={tempDescription}
                         onChange={({ target }) => setTempDescription(target.value)}
                       />
-                    </p>
+                    </div>
                   </span>
 
                   <Divider className="ml-10 mr-10" flexItem orientation="vertical"/>

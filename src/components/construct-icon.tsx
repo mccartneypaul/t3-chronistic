@@ -27,7 +27,7 @@ interface ConstructIconProps {
 }
 
 function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId, boundingBox}: ConstructIconProps) {
-  const nodeRef = React.useRef(null);
+  const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
   const [tempPosition, setTempPosition] = useState(validatePositionInBoundingBox(initialPosition));
   const isDraggingRef = useRef(false);
   const setActiveConstruct = useConstructContext((state) => state.setActiveConstruct)
@@ -73,7 +73,7 @@ function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId,
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     isDraggingRef.current = true;
-    console.log(`InitX: ${initialPosition.x}, InitY: ${initialPosition.y}, DeltaX: ${data.deltaX}, DeltaY:${data.deltaY}, LastX: ${data.lastX}, LastY:${data.lastY}`);
+    // console.log(`InitX: ${initialPosition.x}, InitY: ${initialPosition.y}, DeltaX: ${data.deltaX}, DeltaY:${data.deltaY}, LastX: ${data.lastX}, LastY:${data.lastY}`);
     setTempPosition({ x: tempPosition.x + data.deltaX, y: tempPosition.y + data.deltaY });
   };
 
@@ -83,7 +83,7 @@ function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId,
   
   return (
     <Draggable
-      nodeRef={nodeRef} // To suppress the warning about the ref
+      nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
       onStop={onStop}
       onDrag={onDrag}
       position={{y: tempPosition.y, x: tempPosition.x}}
