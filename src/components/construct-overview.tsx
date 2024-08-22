@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Suspense, useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { DialogActions, DialogContent, DialogTitle, Divider, TextField, Typography, Button, Dialog } from "@mui/material";
 import { useConstructContext } from '../providers/construct-store-provider'
-import { api } from "../utils/api";
+import { api } from "@chronistic/utils/api";
 import { mapFromApi } from '@chronistic/stores/construct';
 
 export interface ModalOpenProps {
