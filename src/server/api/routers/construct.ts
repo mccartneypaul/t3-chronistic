@@ -52,4 +52,18 @@ export const constructRouter = createTRPCRouter({
       });
       return construct;
   }),
+
+  positionPatch: publicProcedure
+    .input(z.object({
+      id: z.string(),
+      posX: z.number(),
+      posY: z.number(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const construct = await ctx.prisma.construct.update({
+        where: {id: input.id},
+        data: {posX: input.posX, posY: input.posY}
+      });
+      return construct;
+  }),
 });

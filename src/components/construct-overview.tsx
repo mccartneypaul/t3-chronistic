@@ -26,7 +26,6 @@ export default function ConstructOverview(props: ModalOpenProps) {
   useEffect(() => {
     async function asyncMutate() {
       if (!activeConstruct) { return; }
-      setConstruct(activeConstruct.id, { description: tempDescription });
       return await mutateDescription.mutateAsync(
         {
           id: activeConstruct.id,
