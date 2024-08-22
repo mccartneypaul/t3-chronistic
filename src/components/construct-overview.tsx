@@ -28,13 +28,17 @@ export interface ModalOpenProps {
 
 export default function ConstructOverview(props: ModalOpenProps) {
   const mutateDescription = api.construct.descriptionPatch.useMutation();
+  const mutateName = api.construct.namePatch.useMutation();
   const [tempDescription, setTempDescription] = useState("");
+  const [tempName, setTempName] = useState("");
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
   const setConstruct = useConstructContext((state) => state.setConstruct);
 
+  // Initialize temp values with active construct values
   useEffect(() => {
     if (activeConstruct) {
       setTempDescription(activeConstruct.description);
+      setTempName(activeConstruct.name);
     }
   }, [activeConstruct?.id]);
 
@@ -60,12 +64,36 @@ export default function ConstructOverview(props: ModalOpenProps) {
           .catch(console.error);
       }, 300);
 
-      // If the hook is called again, cancel the previous timeout
-      // This creates a debounce instead of a delay
       return () => clearTimeout(timeout);
     },
-    // Run the hook every time the user makes a keystroke
     [tempDescription]
+  );
+
+  useEffect(
+    () => {
+      async function asyncMutate() {
+        if (!activeConstruct) {
+          return;
+        }
+        return await mutateName.mutateAsync({
+          id: activeConstruct.id,
+          name: tempName,
+        });
+      }
+
+      const timeout = setTimeout(() => {
+        asyncMutate()
+          .then((r) => {
+            if (activeConstruct && r) {
+              setConstruct(activeConstruct?.id, mapFromApi(r));
+            }
+          })
+          .catch(console.error);
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    },
+    [tempName]
   );
 
   return (
@@ -80,14 +108,29 @@ export default function ConstructOverview(props: ModalOpenProps) {
         maxWidth="md"
       >
         <Suspense fallback={<p>Loading...</p>}>
-          <DialogTitle id="scroll-dialog-title" component="div">
-            <Typography
-              id="construct-overview-modal-title"
-              variant="h5"
-              component="h2"
-            >
-              Construct Overview - {activeConstruct?.name}
-            </Typography>
+          <DialogTitle id="scroll-dialog-title" component="div" sx={{paddingBottom: '5px'}}>
+            <div className="flex flex-row">
+              <div className="mr-2">
+                <Typography
+                  id="construct-overview-modal-title"
+                  variant="h5"
+                  component="h2"
+                >
+                  Construct Overview -  
+                </Typography>
+              </div>
+              <TextField
+              id="title-edit"
+              variant="standard"
+              size="small"
+              value={tempName}
+              sx={{marginLeft: '5', marginTop: '-5'}}
+              inputProps={{style: {fontSize: '1.5rem'}}}
+              onChange={({ target }) =>
+                setTempName(target.value)
+              }
+              />
+            </div>
           </DialogTitle>
           <DialogContent dividers={true}>
             <div id="construct-overview-modal-content">
