@@ -12,19 +12,46 @@ interface Position {
   y: number;
 }
 
+export interface BoundingBox {
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+}
+
 interface ConstructIconProps {
   initialPosition?: Position;
   setOpen: Dispatch<SetStateAction<boolean>>;
   constructId: string;
+  boundingBox: BoundingBox;
 }
 
-function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId}: ConstructIconProps) {
-  const [tempPosition, setTempPosition] = useState(initialPosition);
+function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId, boundingBox}: ConstructIconProps) {
+  const [tempPosition, setTempPosition] = useState(validatePositionInBoundingBox(initialPosition));
   const isDraggingRef = useRef(false);
   const setActiveConstruct = useConstructContext((state) => state.setActiveConstruct)
   const setConstruct = useConstructContext((state) => state.setConstruct)
   const mutatePostition = api.construct.positionPatch.useMutation();
 
+  // console.log(boundingBox);
+
+  function validatePositionInBoundingBox(position: Position) {
+    if (position.x < boundingBox.left) {
+      position.x = boundingBox.left;
+    }
+    else if (position.x > boundingBox.right) {
+      position.x = boundingBox.right;
+    }
+    if (position.y < boundingBox.top) {
+      position.y = boundingBox.top;
+    }
+    else if (position.y > boundingBox.bottom) {
+      position.y = boundingBox.bottom;
+    }
+    return position;
+  }
+
+  // Debounce the position update so that we don't send a request for every pixel moved
   useEffect(() => {
     async function asyncMutate() {
       return await mutatePostition.mutateAsync(
@@ -55,7 +82,12 @@ function ConstructIcon({ initialPosition = { x: 0, y: 0 }, setOpen, constructId}
   };
   
   return (
-    <Draggable onStop={onStop} onDrag={onDrag} position={{y: tempPosition.y, x: tempPosition.x}}>
+    <Draggable
+      onStop={onStop}
+      onDrag={onDrag}
+      position={{y: tempPosition.y, x: tempPosition.x}}
+      bounds={boundingBox}
+    >
       <div className="absolute">
         <IconButton
           color='secondary'
