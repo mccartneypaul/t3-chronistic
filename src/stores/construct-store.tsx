@@ -11,6 +11,7 @@ export interface ConstructState extends ConstructProps {
   activeConstruct?: StoreConstruct;
   setConstruct: (id: string, construct: Partial<StoreConstruct>) => void;
   addConstruct: (construct: StoreConstruct) => void;
+  removeConstruct: (id: string) => void;
   getConstructsForMap: (mapId: string) => StoreConstruct[];
   setActiveConstruct: (constructId: string) => void;
 }
@@ -45,6 +46,10 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
     addConstruct: (newConstruct: StoreConstruct) => 
       set((state) => ({
         constructs: [...state.constructs, newConstruct],
+      })),
+    removeConstruct: (id: string) =>
+      set((state) => ({
+        constructs: state.constructs.filter((construct) => construct.id !== id),
       })),
     getConstructsForMap: (mapId: string): StoreConstruct[] => {
       const constructs =

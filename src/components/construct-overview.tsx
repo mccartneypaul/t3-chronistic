@@ -16,10 +16,12 @@ import {
   Typography,
   Button,
   Dialog,
+  IconButton,
 } from "@mui/material";
 import { useConstructContext } from "../providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -33,6 +35,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
   const [tempName, setTempName] = useState("");
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
   const setConstruct = useConstructContext((state) => state.setConstruct);
+  const removeConstruct = useConstructContext((state) => state.removeConstruct);
 
   // Initialize temp values with active construct values
   useEffect(() => {
@@ -96,6 +99,13 @@ export default function ConstructOverview(props: ModalOpenProps) {
     [tempName]
   );
 
+  function removeThisConstruct() {
+    if (activeConstruct) {
+      removeConstruct(activeConstruct.id);
+      props.setOpen(false);
+    }
+  }
+
   return (
     <>
       <Dialog
@@ -109,27 +119,35 @@ export default function ConstructOverview(props: ModalOpenProps) {
       >
         <Suspense fallback={<p>Loading...</p>}>
           <DialogTitle id="scroll-dialog-title" component="div" sx={{paddingBottom: '5px'}}>
-            <div className="flex flex-row">
-              <div className="mr-2">
-                <Typography
-                  id="construct-overview-modal-title"
-                  variant="h5"
-                  component="h2"
-                >
-                  Construct Overview -  
-                </Typography>
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-row">
+                <div className="mr-2">
+                  <Typography
+                    id="construct-overview-modal-title"
+                    variant="h5"
+                    component="h2"
+                  >
+                    Construct Overview -  
+                  </Typography>
+                </div>
+                <TextField
+                id="title-edit"
+                variant="standard"
+                size="small"
+                value={tempName}
+                sx={{marginLeft: '5', marginTop: '-5'}}
+                inputProps={{style: {fontSize: '1.5rem'}}}
+                onChange={({ target }) =>
+                  setTempName(target.value)
+                }
+                />
               </div>
-              <TextField
-              id="title-edit"
-              variant="standard"
-              size="small"
-              value={tempName}
-              sx={{marginLeft: '5', marginTop: '-5'}}
-              inputProps={{style: {fontSize: '1.5rem'}}}
-              onChange={({ target }) =>
-                setTempName(target.value)
-              }
-              />
+              <IconButton
+                color="warning"
+                onClick={() => {
+                  removeThisConstruct();
+                }}
+              ><DeleteIcon/></IconButton>
             </div>
           </DialogTitle>
           <DialogContent dividers={true}>
