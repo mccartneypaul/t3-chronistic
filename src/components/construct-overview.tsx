@@ -22,6 +22,7 @@ import { useConstructContext } from "../providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AlertDialog from "./alert-dialog";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -30,9 +31,12 @@ export interface ModalOpenProps {
 
 export default function ConstructOverview(props: ModalOpenProps) {
   const mutateDescription = api.construct.patchDescription.useMutation();
+  const deleteConstruct = api.construct.deleteConstruct.useMutation();
   const mutateName = api.construct.patchName.useMutation();
   const [tempDescription, setTempDescription] = useState("");
   const [tempName, setTempName] = useState("");
+  const [isAlertOpen, setAlertOpen] = React.useState(false);
+  const [isOkToDelete, setOkToDelete] = React.useState(false);
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
   const setConstruct = useConstructContext((state) => state.setConstruct);
   const removeConstruct = useConstructContext((state) => state.removeConstruct);
@@ -44,6 +48,19 @@ export default function ConstructOverview(props: ModalOpenProps) {
       setTempName(activeConstruct.name);
     }
   }, [activeConstruct?.id]);
+
+  useEffect(() => {
+    if (activeConstruct && isOkToDelete) {
+      deleteConstruct.mutateAsync(activeConstruct.id).then(() => {
+          removeConstruct(activeConstruct.id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setOkToDelete(false);
+      props.setOpen(false);
+    }
+  }, [isOkToDelete]);
 
   useEffect(
     () => {
@@ -99,13 +116,6 @@ export default function ConstructOverview(props: ModalOpenProps) {
     [tempName]
   );
 
-  function removeThisConstruct() {
-    if (activeConstruct) {
-      removeConstruct(activeConstruct.id);
-      props.setOpen(false);
-    }
-  }
-
   return (
     <>
       <Dialog
@@ -145,7 +155,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
               <IconButton
                 color="warning"
                 onClick={() => {
-                  removeThisConstruct();
+                  setAlertOpen(true);
                 }}
               ><DeleteIcon/></IconButton>
             </div>
@@ -220,6 +230,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
           </DialogActions>
         </Suspense>
       </Dialog>
+      <AlertDialog isOpen={isAlertOpen} setOpen={setAlertOpen} setDelete={setOkToDelete}/>
     </>
   );
 }
