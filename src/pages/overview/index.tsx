@@ -26,7 +26,7 @@ export default function Overview() {
         <div className="flex flex-col">
           {/* TODO: This kind of works... but it won't work for someone just starting out. FIX IT  */}
           {constructs.length > 0 ? (
-            <ConstructStoreProvider constructs={constructs}>
+            <ConstructStoreProvider activeMapId={hardCodedMapId} constructs={constructs}>
               <ResponsiveAppBar />
               <OverviewMap />
               <Timeline />

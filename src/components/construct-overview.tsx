@@ -27,8 +27,8 @@ export interface ModalOpenProps {
 }
 
 export default function ConstructOverview(props: ModalOpenProps) {
-  const mutateDescription = api.construct.descriptionPatch.useMutation();
-  const mutateName = api.construct.namePatch.useMutation();
+  const mutateDescription = api.construct.patchDescription.useMutation();
+  const mutateName = api.construct.patchName.useMutation();
   const [tempDescription, setTempDescription] = useState("");
   const [tempName, setTempName] = useState("");
   const activeConstruct = useConstructContext((state) => state.activeConstruct);

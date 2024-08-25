@@ -3,12 +3,14 @@ import { mapFromApi, type StoreConstruct } from "./construct";
 import { api } from "../utils/api";
 
 export interface ConstructProps {
+  activeMapId: string;
   constructs: StoreConstruct[];
 }
 
 export interface ConstructState extends ConstructProps {
   activeConstruct?: StoreConstruct;
   setConstruct: (id: string, construct: Partial<StoreConstruct>) => void;
+  addConstruct: (construct: StoreConstruct) => void;
   getConstructsForMap: (mapId: string) => StoreConstruct[];
   setActiveConstruct: (constructId: string) => void;
 }
@@ -21,12 +23,14 @@ export const initConstructStore = async (
   const query = api.construct.getByMap.useQuery(mapId);
   await query.refetch();
   return {
+    activeMapId: mapId,
     constructs: query.data?.map((construct) => mapFromApi(construct)) ?? [],
   };
 };
 
 export const createConstructStore = (initState?: Partial<ConstructState>) => {
   const DEFAULT_PROPS: ConstructProps = {
+    activeMapId: "",
     constructs: [],
   };
   return createStore<ConstructState>()((set) => ({
@@ -37,6 +41,10 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
         constructs: state.constructs.map((construct) =>
           construct.id === id ? { ...construct, ...newConstruct } : construct
         ),
+      })),
+    addConstruct: (newConstruct: StoreConstruct) => 
+      set((state) => ({
+        constructs: [...state.constructs, newConstruct],
       })),
     getConstructsForMap: (mapId: string): StoreConstruct[] => {
       const constructs =

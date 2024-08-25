@@ -19,7 +19,7 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  constructCreate: publicProcedure
+  createConstruct: publicProcedure
     .input(
       z.object({
         data: z.object({
@@ -37,7 +37,7 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  descriptionPatch: publicProcedure
+  patchDescription: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -52,7 +52,7 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  namePatch: publicProcedure
+  patchName: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -67,7 +67,7 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  positionPatch: publicProcedure
+  patchPosition: publicProcedure
     .input(
       z.object({
         id: z.string(),

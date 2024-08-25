@@ -44,7 +44,7 @@ function ConstructIcon({
     (state) => state.setActiveConstruct
   );
   const setConstruct = useConstructContext((state) => state.setConstruct);
-  const mutatePostition = api.construct.positionPatch.useMutation();
+  const mutatePostition = api.construct.patchPosition.useMutation();
 
   function validatePositionInBoundingBox(position: Position) {
     if (position.x < boundingBox.left) {
