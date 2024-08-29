@@ -33,7 +33,7 @@ export function AddConstructIcon() {
 
   return (
     <>
-      <Fab className="m-0 fixed top-3/4 left-20" color="primary" aria-label="add construct" onClick={handleIconClick}>
+      <Fab color="primary" aria-label="add construct" onClick={handleIconClick}>
         <AddIcon />
       </Fab>
     </>

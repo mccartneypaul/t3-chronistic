@@ -3,9 +3,9 @@ import ConstructIcon, { type BoundingBox } from "./construct-icon";
 import ConstructOverview from "./construct-overview";
 import React, { useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
-import { AddConstructIcon } from "./add-construct-icon";
+import { ActionPallette } from "./action-palette";
 
-const mapImage = "/TestWorldMap.png";
+const mapImage = "/middleearth.jpg";
 
 const initBoundingBox: BoundingBox = { top: 0, left: 0, bottom: 0, right: 0 };
 
@@ -22,7 +22,7 @@ function OverviewMap() {
   return (
     <>
       <div className="aspect-auto relative h-[37vw]">
-        <AddConstructIcon/>
+        <ActionPallette/>
         <Image
           className="object-contain"
           src={mapImage}
