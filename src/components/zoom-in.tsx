@@ -5,10 +5,10 @@ import type { ViewTransformationProps } from './action-palette';
 export function ZoomIn(props: ViewTransformationProps) {
   const incrementZoom = () => {
     props.setViewTransformation((prev) => {
-      if (prev.scale >= 300) {
+      if (prev.scale >= 500) {
         return {
           ...prev,
-          scale: 300,
+          scale: 500,
         };
       } else {
         return {
