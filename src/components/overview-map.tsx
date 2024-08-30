@@ -28,7 +28,7 @@ function OverviewMap() {
 
   return (
     <>
-      <div className="aspect-auto relative h-[37vw]">
+      <div className="aspect-auto overflow-hidden relative h-[37vw]">
         <ActionPallette viewTransformation={viewTransformation} setViewTransformation={setViewTransformation}/>
         <Image
           className={`object-contain transform scale-${viewTransformation.scale} translate-x-${viewTransformation.translateX} translate-y-${viewTransformation.translateY}`}
