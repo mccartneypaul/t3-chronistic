@@ -2,6 +2,8 @@
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   safelist: [
+    // THIS CRAP AIN'T WORKING
+    // TODO: Fix this
     `scale-100`,
     `scale-150`,
     `scale-200`,
@@ -9,7 +11,13 @@ const config = {
     `scale-300`,
   ],
   theme: {
-    extend: {},
+    extend: {
+      scale: {
+        '200': '2.00',
+        '250': '2.50',
+        '300': '3.00',
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
