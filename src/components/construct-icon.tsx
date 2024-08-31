@@ -20,6 +20,8 @@ export interface BoundingBox {
   left: number;
   bottom: number;
   right: number;
+  width: number;
+  height: number;
 }
 
 interface ConstructIconProps {

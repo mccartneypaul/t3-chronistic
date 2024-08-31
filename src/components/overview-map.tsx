@@ -4,10 +4,11 @@ import ConstructOverview from "./construct-overview";
 import React, { useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { ActionPallette } from "./action-palette";
+import { StoreConstruct } from "@chronistic/stores/construct";
 
 const mapImage = "/middleearth.jpg";
 
-const initBoundingBox: BoundingBox = { top: 0, left: 0, bottom: 0, right: 0 };
+const initBoundingBox: BoundingBox = { top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 };
 
 export interface ViewTransformation {
   scale: number;
@@ -15,16 +16,64 @@ export interface ViewTransformation {
   translateY: number;
 }
 
+export function translateConstructForView(boundingBox: BoundingBox, viewTransformation: ViewTransformation, construct: StoreConstruct)
+{
+  const centerX = boundingBox.width / 2;
+  const centerY = boundingBox.top + (boundingBox.height / 2);
+
+  // Calculate the position of the construct relative to the center
+  const relativeX = construct.posX - centerX;
+  const relativeY = construct.posY - centerY;
+
+  // Scale the relative position
+  const scaledX = relativeX * viewTransformation.scale/100;
+  const scaledY = relativeY * viewTransformation.scale/100;
+
+  // Calculate the new position of the construct
+  const newPosX = scaledX + centerX + viewTransformation.translateX;
+  const newPosY = scaledY + centerY + viewTransformation.translateY;
+
+  return {
+    ...construct,
+    posX: newPosX,
+    posY: newPosY,
+  };
+}
+
+export function translateConstructForStore(boundingBox: BoundingBox, viewTransformation: ViewTransformation, construct: StoreConstruct) {
+  const centerX = boundingBox.width / 2;
+  const centerY = boundingBox.top + (boundingBox.height / 2);
+
+  // Translate the construct's position back to the center
+  const translatedX = construct.posX - centerX - viewTransformation.translateX;
+  const translatedY = construct.posY - centerY - viewTransformation.translateY;
+
+  // Reverse the scaling transformation
+  const originalX = translatedX / (viewTransformation.scale / 100);
+  const originalY = translatedY / (viewTransformation.scale / 100);
+
+  // Calculate the original position of the construct
+  const originalPosX = originalX + centerX;
+  const originalPosY = originalY + centerY;
+
+  return {
+    ...construct,
+    posX: originalPosX,
+    posY: originalPosY,
+  };
+}
+
 function OverviewMap() {
   const [isOpen, setOpen] = React.useState(false);
   const [viewTransformation, setViewTransformation] = React.useState({scale: 100, translateX: 0, translateY: 0});
   const [boundingBox, setBoundingBox] = React.useState(initBoundingBox);
-  const constructs = useConstructContext((state) => state.constructs);
+  const storeConstructs = useConstructContext((state) => state.constructs);
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
+  const translatedConstructs = useConstructContext((state) => state.constructs.map(construct => translateConstructForView(boundingBox, viewTransformation, construct)));
 
   useEffect(() => {
-    console.log("OverviewMap re-rendered with constructs:", constructs);
-  }, [constructs]);
+    console.log("OverviewMap re-rendered with constructs:", storeConstructs);
+  }, [storeConstructs]);
 
   return (
     <>
@@ -36,8 +85,10 @@ function OverviewMap() {
           alt="map"
           quality="100"
           fill
-          onLoad={(e) =>
+          onLoad={(e) =>{
+            console.log("Image loaded", e.currentTarget.getBoundingClientRect());
             setBoundingBox(e.currentTarget.getBoundingClientRect())
+          }
           }
         />
       </div>
@@ -46,7 +97,12 @@ function OverviewMap() {
       )}
 
       {boundingBox !== initBoundingBox &&
-        constructs.map((construct) => (
+        translatedConstructs
+          // .filter((construct) => construct.posX >= boundingBox.left &&
+          //                        construct.posX <= boundingBox.right &&
+          //                        construct.posY >= boundingBox.top &&
+          //                        construct.posY <= boundingBox.bottom)
+          .map((construct) => (
           <ConstructIcon
             key={construct.id}
             initialPosition={{ x: construct.posX, y: construct.posY }}
