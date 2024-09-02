@@ -1,63 +1,13 @@
 import Image from "next/image";
-import ConstructIcon, { type Position, type BoundingBox } from "./construct-icon";
+import ConstructIcon from "./construct-icon";
 import ConstructOverview from "./construct-overview";
 import React, { useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { ActionPallette } from "./action-palette";
+import { translatePositionForView} from "@chronistic/models/Position";
+import { initBoundingBox } from "@chronistic/models/BoundingBox";
 
 const mapImage = "/middleearth.jpg";
-
-const initBoundingBox: BoundingBox = { top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 };
-
-export interface ViewTransformation {
-  scale: number;
-  translateX: number;
-  translateY: number;
-}
-
-export function translatePositionForView(boundingBox: BoundingBox, viewTransformation: ViewTransformation, position: Position | undefined): Position {
-  const centerX = boundingBox.width / 2;
-  const centerY = boundingBox.top + (boundingBox.height / 2);
-
-  // Calculate the position of the construct relative to the center
-  const relativeX = (position?.posX ?? 0) - centerX;
-  const relativeY = (position?.posY ?? 0) - centerY;
-
-  // Scale the relative position
-  const scaledX = relativeX * viewTransformation.scale/100;
-  const scaledY = relativeY * viewTransformation.scale/100;
-
-  // Calculate the new position of the construct
-  const newPosX = scaledX + centerX + viewTransformation.translateX;
-  const newPosY = scaledY + centerY + viewTransformation.translateY;
-
-  return {
-    posX: newPosX,
-    posY: newPosY,
-  };
-}
-
-export function translatePositionForStore(boundingBox: BoundingBox, viewTransformation: ViewTransformation, position: Position | undefined): Position {
-  const centerX = boundingBox.width / 2;
-  const centerY = boundingBox.top + (boundingBox.height / 2);
-
-  // Translate the construct's position back to the center
-  const translatedX = (position?.posX ?? 0) - centerX - viewTransformation.translateX;
-  const translatedY = (position?.posY ?? 0) - centerY - viewTransformation.translateY;
-
-  // Reverse the scaling transformation
-  const originalX = translatedX / (viewTransformation.scale / 100);
-  const originalY = translatedY / (viewTransformation.scale / 100);
-
-  // Calculate the original position of the construct
-  const originalPosX = originalX + centerX;
-  const originalPosY = originalY + centerY;
-
-  return {
-    posX: originalPosX,
-    posY: originalPosY,
-  };
-}
 
 function OverviewMap() {
   const [isOpen, setOpen] = React.useState(false);

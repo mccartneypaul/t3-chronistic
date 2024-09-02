@@ -1,8 +1,8 @@
 import { ZoomOut } from "./zoom-out";
 import { AddConstructIcon } from "./add-construct-icon";
 import { ZoomIn } from "./zoom-in";
-import type { ViewTransformation } from "./overview-map";
 import type { Dispatch, SetStateAction } from "react";
+import type { ViewTransformation } from "@chronistic/models/ViewTransformation";
 
 export interface ViewTransformationProps {
   viewTransformation: ViewTransformation;

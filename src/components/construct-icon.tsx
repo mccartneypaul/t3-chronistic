@@ -9,21 +9,10 @@ import { IconButton } from "@mui/material";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
-import { translatePositionForStore, translatePositionForView, type ViewTransformation } from "./overview-map";
-
-export interface Position {
-  posX: number;
-  posY: number;
-}
-
-export interface BoundingBox {
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
-  width: number;
-  height: number;
-}
+import { translatePositionForStore, translatePositionForView } from "@chronistic/models/Position";
+import type { BoundingBox } from "@chronistic/models/BoundingBox";
+import type { ViewTransformation } from "@chronistic/models/ViewTransformation";
+import type { Position } from "@chronistic/models/Position";
 
 interface ConstructIconProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -50,6 +39,7 @@ function ConstructIcon({
   const setConstruct = useConstructContext((state) => state.setConstruct);
   const mutatePostition = api.construct.patchPosition.useMutation();
 
+  // Update the temp position whenever construct or view transformation changes
   useEffect(() => {
     if (thisConstruct) {
       const pos = translatePositionForView(boundingBox, viewTransformation, thisConstruct);
@@ -57,6 +47,7 @@ function ConstructIcon({
     }
   }, [thisConstruct, boundingBox, viewTransformation]);
 
+  // Ensure the position is within the bounding box for the view
   function validatePositionInBoundingBox(position: Position) {
     if (position.posX < boundingBox.left) {
       position.posX = boundingBox.left;
@@ -79,6 +70,7 @@ function ConstructIcon({
     }));
   };
 
+  // Only mutate the position if the icon was dragged
   const onStop = () => {
     if (!isDraggingRef.current) { return; }
     isDraggingRef.current = false;
