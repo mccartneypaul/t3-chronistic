@@ -9,10 +9,11 @@ import { IconButton } from "@mui/material";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
+import { translatePositionForStore, translatePositionForView, type ViewTransformation } from "./overview-map";
 
-interface Position {
-  x: number;
-  y: number;
+export interface Position {
+  posX: number;
+  posY: number;
 }
 
 export interface BoundingBox {
@@ -25,21 +26,22 @@ export interface BoundingBox {
 }
 
 interface ConstructIconProps {
-  initialPosition?: Position;
   setOpen: Dispatch<SetStateAction<boolean>>;
   constructId: string;
   boundingBox: BoundingBox;
+  viewTransformation: ViewTransformation;
 }
 
 function ConstructIcon({
-  initialPosition = { x: 0, y: 0 },
   setOpen,
   constructId,
   boundingBox,
+  viewTransformation,
 }: ConstructIconProps) {
   const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
-  const [tempPosition, setTempPosition] = useState(
-    validatePositionInBoundingBox(initialPosition)
+  const [tempPosition, setTempPosition] = useState({posX: 0, posY: 0});
+  const thisConstruct = useConstructContext((state) => 
+    state.constructs.find((c) => c.id === constructId)
   );
   const isDraggingRef = useRef(false);
   const setActiveConstruct = useConstructContext(
@@ -48,54 +50,54 @@ function ConstructIcon({
   const setConstruct = useConstructContext((state) => state.setConstruct);
   const mutatePostition = api.construct.patchPosition.useMutation();
 
-  function validatePositionInBoundingBox(position: Position) {
-    if (position.x < boundingBox.left) {
-      position.x = boundingBox.left;
-    } else if (position.x > boundingBox.right) {
-      position.x = boundingBox.right;
+  useEffect(() => {
+    if (thisConstruct) {
+      const pos = translatePositionForView(boundingBox, viewTransformation, thisConstruct);
+      setTempPosition(validatePositionInBoundingBox(pos));
     }
-    if (position.y < boundingBox.top) {
-      position.y = boundingBox.top;
-    } else if (position.y > boundingBox.bottom) {
-      position.y = boundingBox.bottom;
+  }, [thisConstruct, boundingBox, viewTransformation]);
+
+  function validatePositionInBoundingBox(position: Position) {
+    if (position.posX < boundingBox.left) {
+      position.posX = boundingBox.left;
+    } else if (position.posX > boundingBox.right) {
+      position.posX = boundingBox.right;
+    }
+    if (position.posY < boundingBox.top) {
+      position.posY = boundingBox.top;
+    } else if (position.posY > boundingBox.bottom) {
+      position.posY = boundingBox.bottom;
     }
     return position;
   }
 
-  // Debounce the position update so that we don't send a request for every pixel moved
-  useEffect(() => {
-    async function asyncMutate() {
-      return await mutatePostition.mutateAsync({
-        id: constructId,
-        posX: tempPosition.x,
-        posY: tempPosition.y,
-      });
-    }
-
-    const timeout = setTimeout(() => {
-      asyncMutate()
-        .then((r) => {
-          if (r) {
-            setConstruct(constructId, mapFromApi(r));
-          }
-        })
-        .catch(console.error);
-    }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [tempPosition]);
-
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     isDraggingRef.current = true;
-    // console.log(`InitX: ${initialPosition.x}, InitY: ${initialPosition.y}, DeltaX: ${data.deltaX}, DeltaY:${data.deltaY}, LastX: ${data.lastX}, LastY:${data.lastY}`);
-    setTempPosition({
-      x: tempPosition.x + data.deltaX,
-      y: tempPosition.y + data.deltaY,
-    });
+    setTempPosition((prevPosition) => ({
+      posX: prevPosition.posX + data.deltaX,
+      posY: prevPosition.posY + data.deltaY,
+    }));
   };
 
   const onStop = () => {
+    if (!isDraggingRef.current) { return; }
     isDraggingRef.current = false;
+
+    async function asyncMutate() {
+      const storePosition = translatePositionForStore(boundingBox, viewTransformation, tempPosition);
+      return await mutatePostition.mutateAsync({
+        id: constructId,
+        ...storePosition
+      });
+    }
+
+    asyncMutate()
+      .then((r) => {
+        if (r) {
+          setConstruct(constructId, mapFromApi(r));
+        }
+      })
+      .catch(console.error);
   };
 
   return (
@@ -103,7 +105,7 @@ function ConstructIcon({
       nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
       onStop={onStop}
       onDrag={onDrag}
-      position={{ y: tempPosition.y, x: tempPosition.x }}
+      position={{ y: tempPosition.posY, x: tempPosition.posX }}
       bounds={boundingBox}
     >
       <div ref={nodeRef} className="absolute">
