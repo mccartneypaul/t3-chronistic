@@ -11,7 +11,7 @@ export interface ViewTransformationProps {
 
 export function ActionPallette(props: ViewTransformationProps) {
   return (
-    <div className="flex flex-col m-10 space-y-4 top-1/2 left-20">
+    <div className="absolute flex flex-col m-10 space-y-4 top-10 left-3">
       <ZoomIn viewTransformation={props.viewTransformation} setViewTransformation={props.setViewTransformation}/>
       <ZoomOut viewTransformation={props.viewTransformation} setViewTransformation={props.setViewTransformation}/>
       <AddConstructIcon/>

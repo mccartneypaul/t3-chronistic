@@ -6,10 +6,13 @@ import { useConstructContext } from "@chronistic/providers/construct-store-provi
 import { ActionPallette } from "./action-palette";
 import { translatePositionForView} from "@chronistic/models/Position";
 import { initBoundingBox } from "@chronistic/models/BoundingBox";
+import Draggable, { type DraggableData, type DraggableEvent } from "react-draggable";
 
 const mapImage = "/middleearth.jpg";
 
 function OverviewMap() {
+  const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
+  const isDraggingRef = React.useRef(false);
   const [isOpen, setOpen] = React.useState(false);
   const [viewTransformation, setViewTransformation] = React.useState({scale: 100, translateX: 0, translateY: 0});
   const [boundingBox, setBoundingBox] = React.useState(initBoundingBox);
@@ -25,34 +28,65 @@ function OverviewMap() {
     console.log("OverviewMap re-rendered with constructs:", storeConstructs);
   }, [storeConstructs]);
 
+  const onDrag = (e: DraggableEvent, data: DraggableData) => {
+    isDraggingRef.current = true;
+    
+    // TODO: Transformation on zoom is not working correcty
+    setViewTransformation((prevViewTransformation) => {
+      return {
+        ...prevViewTransformation,
+        translateX: prevViewTransformation.translateX + data.deltaX,
+        translateY: prevViewTransformation.translateY + data.deltaY,
+      };
+    });
+    console.log("Dragged", viewTransformation);
+  };
+
+  const onStop = () => {
+    isDraggingRef.current = false;
+  };
+
   return (
     <>
-      <div className="aspect-auto overflow-hidden relative h-[37vw]">
-        <ActionPallette viewTransformation={viewTransformation} setViewTransformation={setViewTransformation}/>
-        <Image
-          className={`object-contain transform scale-${viewTransformation.scale} translate-x-${viewTransformation.translateX} translate-y-${viewTransformation.translateY}`}
-          src={mapImage}
-          alt="map"
-          quality="100"
-          fill
-          onLoad={(e) =>{
-            console.log("Image loaded", e.currentTarget.getBoundingClientRect());
-            setBoundingBox(e.currentTarget.getBoundingClientRect())
-          }
-          }
-        />
+      <div className="overflow-hidden">
+        <div className={`overflow-hidden aspect-auto relative h-[37vw] transform scale-${viewTransformation.scale}`}>
+          <Draggable
+            nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
+            onStop={onStop}
+            onDrag={onDrag}
+            scale={viewTransformation.scale / 100}
+          >
+            <Image
+              className={`object-contain`}
+              src={mapImage}
+              alt="map"
+              quality="100"
+              ref={nodeRef}
+              fill
+              draggable={false} // Disable default drag behavior
+              onLoad={(e) =>{
+                console.log("Image loaded", e.currentTarget.getBoundingClientRect());
+                setBoundingBox(e.currentTarget.getBoundingClientRect())
+              }
+              }
+            />
+          </Draggable>
+        </div>
       </div>
+
       {activeConstruct && (
         <ConstructOverview isOpen={isOpen} setOpen={setOpen} />
       )}
-
+      
+      <ActionPallette viewTransformation={viewTransformation} setViewTransformation={setViewTransformation}/>
+      
       {boundingBox !== initBoundingBox &&
         translatedConstructs
           .filter((construct) => construct !== undefined &&
-                                 construct.posX >= boundingBox.left &&
-                                 construct.posX <= boundingBox.right &&
-                                 construct.posY >= boundingBox.top &&
-                                 construct.posY <= boundingBox.bottom)
+                                construct.posX >= boundingBox.left &&
+                                construct.posX <= boundingBox.right &&
+                                construct.posY >= boundingBox.top &&
+                                construct.posY <= boundingBox.bottom)
           .map((construct) => (
           <ConstructIcon
             key={construct.id}
@@ -61,8 +95,9 @@ function OverviewMap() {
             boundingBox={boundingBox}
             viewTransformation={viewTransformation}
           />
-        ))}
+      ))}
     </>
+    
   );
 }
 
