@@ -33,8 +33,8 @@ export function translatePositionForStore(boundingBox: BoundingBox, viewTransfor
   const centerY = boundingBox.top + (boundingBox.height / 2);
 
   // Translate the construct's position back to the center
-  const translatedX = (position?.posX ?? 0) - centerX - viewTransformation.translateX / viewTransformation.scale/100;
-  const translatedY = (position?.posY ?? 0) - centerY - viewTransformation.translateY / viewTransformation.scale/100;
+  const translatedX = (position?.posX ?? 0) - centerX - viewTransformation.translateX * viewTransformation.scale/100;
+  const translatedY = (position?.posY ?? 0) - centerY - viewTransformation.translateY * viewTransformation.scale/100;
 
   // Reverse the scaling transformation
   const originalX = translatedX / (viewTransformation.scale / 100);
