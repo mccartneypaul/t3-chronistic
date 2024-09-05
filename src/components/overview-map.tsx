@@ -31,7 +31,6 @@ function OverviewMap() {
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     isDraggingRef.current = true;
     
-    // TODO: Transformation on zoom is not working correcty
     setViewTransformation((prevViewTransformation) => {
       return {
         ...prevViewTransformation,
