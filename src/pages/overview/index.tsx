@@ -1,4 +1,4 @@
-import Timeline from "@chronistic/components/timeline";
+import Timeline from "@chronistic/components/map/timeline";
 import ResponsiveAppBar from "@chronistic/components/responsive-app-bar";
 import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
