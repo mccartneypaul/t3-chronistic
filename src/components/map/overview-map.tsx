@@ -1,9 +1,9 @@
 import Image from "next/image";
-import ConstructIcon from "./construct-icon";
-import ConstructOverview from "./construct-overview";
+import ConstructIcon from "@chronistic/components/construct/construct-icon";
+import ConstructOverview from "@chronistic/components/construct/construct-overview";
 import React, { Suspense, useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
-import { ActionPallette } from "./action-palette";
+import { ActionPallette } from "@chronistic/components/action-palette";
 import { translatePositionForView } from "@chronistic/models/Position";
 import { initBoundingBox } from "@chronistic/models/BoundingBox";
 import Draggable, {

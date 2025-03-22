@@ -18,11 +18,11 @@ import {
   Dialog,
   IconButton,
 } from "@mui/material";
-import { useConstructContext } from "../providers/construct-store-provider";
+import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AlertDialog from "./alert-dialog";
+import AlertDialog from "@chronistic/components/alert-dialog";
 
 export interface ModalOpenProps {
   isOpen: boolean;

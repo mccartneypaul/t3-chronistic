@@ -3,7 +3,7 @@ import ResponsiveAppBar from "@chronistic/components/responsive-app-bar";
 import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi, type StoreConstruct } from "@chronistic/stores/construct";
-import OverviewMap from "@chronistic/components/overview-map";
+import OverviewMap from "@chronistic/components/map/overview-map";
 import { Suspense, useEffect, useState, startTransition } from "react";
 
 const hardCodedMapId = "totesacuid";
