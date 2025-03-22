@@ -10,7 +10,7 @@ const hardCodedMapId = "totesacuid";
 
 export default function Overview() {
   const { data } = api.construct.getByMap.useQuery(hardCodedMapId);
-  const [constructs, setConstructs] = useState<StoreConstruct[]>([]);
+  const [constructs, setConstructs] = useState<StoreConstruct[] | undefined>(undefined);
 
   useEffect(() => {
     startTransition(() => {
@@ -24,8 +24,7 @@ export default function Overview() {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="min-h-screen bg-slate-700">
         <div className="flex flex-col">
-          {/* TODO: This kind of works... but it won't work for someone just starting out. FIX IT  */}
-          {constructs.length > 0 ? (
+          {constructs != undefined ? (
             <ConstructStoreProvider activeMapId={hardCodedMapId} constructs={constructs}>
               <ResponsiveAppBar />
               <OverviewMap />
