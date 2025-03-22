@@ -45,7 +45,7 @@ export const constructRouter = createTRPCRouter({
           id: input,
         },
       });
-      return construct
+      return construct;
     }),
 
   patchDescription: publicProcedure

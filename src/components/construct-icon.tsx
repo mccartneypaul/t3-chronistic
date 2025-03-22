@@ -9,7 +9,10 @@ import { IconButton } from "@mui/material";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
-import { translatePositionForStore, translatePositionForView } from "@chronistic/models/Position";
+import {
+  translatePositionForStore,
+  translatePositionForView,
+} from "@chronistic/models/Position";
 import type { BoundingBox } from "@chronistic/models/BoundingBox";
 import type { ViewTransformation } from "@chronistic/models/ViewTransformation";
 import type { Position } from "@chronistic/models/Position";
@@ -28,8 +31,8 @@ function ConstructIcon({
   viewTransformation,
 }: ConstructIconProps) {
   const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
-  const [tempPosition, setTempPosition] = useState({posX: 0, posY: 0});
-  const thisConstruct = useConstructContext((state) => 
+  const [tempPosition, setTempPosition] = useState({ posX: 0, posY: 0 });
+  const thisConstruct = useConstructContext((state) =>
     state.constructs.find((c) => c.id === constructId)
   );
   const isDraggingRef = useRef(false);
@@ -42,7 +45,11 @@ function ConstructIcon({
   // Update the temp position whenever construct or view transformation changes
   useEffect(() => {
     if (thisConstruct) {
-      const pos = translatePositionForView(boundingBox, viewTransformation, thisConstruct);
+      const pos = translatePositionForView(
+        boundingBox,
+        viewTransformation,
+        thisConstruct
+      );
       setTempPosition(validatePositionInBoundingBox(pos));
     }
   }, [thisConstruct, boundingBox, viewTransformation]);
@@ -72,14 +79,20 @@ function ConstructIcon({
 
   // Only mutate the position if the icon was dragged
   const onStop = () => {
-    if (!isDraggingRef.current) { return; }
+    if (!isDraggingRef.current) {
+      return;
+    }
     isDraggingRef.current = false;
 
     async function asyncMutate() {
-      const storePosition = translatePositionForStore(boundingBox, viewTransformation, tempPosition);
+      const storePosition = translatePositionForStore(
+        boundingBox,
+        viewTransformation,
+        tempPosition
+      );
       return await mutatePostition.mutateAsync({
         id: constructId,
-        ...storePosition
+        ...storePosition,
       });
     }
 

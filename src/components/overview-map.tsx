@@ -4,9 +4,12 @@ import ConstructOverview from "./construct-overview";
 import React, { Suspense, useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { ActionPallette } from "./action-palette";
-import { translatePositionForView} from "@chronistic/models/Position";
+import { translatePositionForView } from "@chronistic/models/Position";
 import { initBoundingBox } from "@chronistic/models/BoundingBox";
-import Draggable, { type DraggableData, type DraggableEvent } from "react-draggable";
+import Draggable, {
+  type DraggableData,
+  type DraggableEvent,
+} from "react-draggable";
 
 const mapImage = "/api/s3?file=middleearth.jpg";
 
@@ -15,14 +18,20 @@ export default function OverviewMap() {
   const s3ImageUrl = React.useRef("");
   const isDraggingRef = React.useRef(false);
   const [isOpen, setOpen] = React.useState(false);
-  const [viewTransformation, setViewTransformation] = React.useState({scale: 100, translateX: 0, translateY: 0});
+  const [viewTransformation, setViewTransformation] = React.useState({
+    scale: 100,
+    translateX: 0,
+    translateY: 0,
+  });
   const [boundingBox, setBoundingBox] = React.useState(initBoundingBox);
   const storeConstructs = useConstructContext((state) => state.constructs);
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
-  const translatedConstructs = useConstructContext((state) => state.constructs.map(construct => ({
-    ...construct,
-    ...translatePositionForView(boundingBox, viewTransformation, construct)
-  })));
+  const translatedConstructs = useConstructContext((state) =>
+    state.constructs.map((construct) => ({
+      ...construct,
+      ...translatePositionForView(boundingBox, viewTransformation, construct),
+    }))
+  );
 
   useEffect(() => {
     console.log("OverviewMap re-rendered with constructs:", storeConstructs);
@@ -30,7 +39,7 @@ export default function OverviewMap() {
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     isDraggingRef.current = true;
-    
+
     setViewTransformation((prevViewTransformation) => {
       return {
         ...prevViewTransformation,
@@ -49,7 +58,9 @@ export default function OverviewMap() {
     <>
       <Suspense fallback={<p>Loading...</p>}>
         <div className="overflow-hidden">
-          <div className={`overflow-hidden aspect-auto relative h-[37vw] transform scale-${viewTransformation.scale}`}>
+          <div
+            className={`aspect-auto relative h-[37vw] transform overflow-hidden scale-${viewTransformation.scale}`}
+          >
             <Draggable
               nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
               onStop={onStop}
@@ -65,11 +76,13 @@ export default function OverviewMap() {
                 ref={nodeRef}
                 fill
                 draggable={false} // Disable default drag behavior
-                onLoad={(e) =>{
-                  console.log("Image loaded", e.currentTarget.getBoundingClientRect());
-                  setBoundingBox(e.currentTarget.getBoundingClientRect())
-                }
-                }
+                onLoad={(e) => {
+                  console.log(
+                    "Image loaded",
+                    e.currentTarget.getBoundingClientRect()
+                  );
+                  setBoundingBox(e.currentTarget.getBoundingClientRect());
+                }}
               />
             </Draggable>
           </div>
@@ -78,25 +91,31 @@ export default function OverviewMap() {
         {activeConstruct && (
           <ConstructOverview isOpen={isOpen} setOpen={setOpen} />
         )}
-        
-        <ActionPallette viewTransformation={viewTransformation} setViewTransformation={setViewTransformation}/>
-        
+
+        <ActionPallette
+          viewTransformation={viewTransformation}
+          setViewTransformation={setViewTransformation}
+        />
+
         {boundingBox !== initBoundingBox &&
           translatedConstructs
-            .filter((construct) => construct !== undefined &&
-                                  construct.posX >= boundingBox.left &&
-                                  construct.posX <= boundingBox.right &&
-                                  construct.posY >= boundingBox.top &&
-                                  construct.posY <= boundingBox.bottom)
+            .filter(
+              (construct) =>
+                construct !== undefined &&
+                construct.posX >= boundingBox.left &&
+                construct.posX <= boundingBox.right &&
+                construct.posY >= boundingBox.top &&
+                construct.posY <= boundingBox.bottom
+            )
             .map((construct) => (
-            <ConstructIcon
-              key={construct.id}
-              setOpen={setOpen}
-              constructId={construct.id}
-              boundingBox={boundingBox}
-              viewTransformation={viewTransformation}
-            />
-        ))}
+              <ConstructIcon
+                key={construct.id}
+                setOpen={setOpen}
+                constructId={construct.id}
+                boundingBox={boundingBox}
+                viewTransformation={viewTransformation}
+              />
+            ))}
       </Suspense>
     </>
   );

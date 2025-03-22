@@ -1,6 +1,6 @@
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import { Fab } from '@mui/material';
-import type { ViewTransformationProps } from './action-palette';
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { Fab } from "@mui/material";
+import type { ViewTransformationProps } from "./action-palette";
 
 export function ZoomIn(props: ViewTransformationProps) {
   const incrementZoom = () => {
@@ -17,7 +17,7 @@ export function ZoomIn(props: ViewTransformationProps) {
         };
       }
     });
-  }
+  };
 
   return (
     <>
@@ -26,5 +26,4 @@ export function ZoomIn(props: ViewTransformationProps) {
       </Fab>
     </>
   );
-
 }

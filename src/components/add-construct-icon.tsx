@@ -10,7 +10,7 @@ export function AddConstructIcon() {
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { clientX, clientY } = event;
-    
+
     const newConstruct = {
       name: "New Construct",
       description: "New Construct Description",
@@ -20,7 +20,8 @@ export function AddConstructIcon() {
     };
     console.log(newConstruct);
 
-    createConstruct.mutateAsync({ data: newConstruct })
+    createConstruct
+      .mutateAsync({ data: newConstruct })
       .then((r) => {
         if (r) {
           addConstruct(r);

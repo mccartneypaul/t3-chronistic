@@ -1,6 +1,6 @@
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import { Fab } from '@mui/material';
-import type { ViewTransformationProps } from './action-palette';
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import { Fab } from "@mui/material";
+import type { ViewTransformationProps } from "./action-palette";
 
 export function ZoomOut(props: ViewTransformationProps) {
   const decrementZoom = () => {
@@ -17,7 +17,7 @@ export function ZoomOut(props: ViewTransformationProps) {
         };
       }
     });
-  }
+  };
 
   return (
     <>
@@ -26,5 +26,4 @@ export function ZoomOut(props: ViewTransformationProps) {
       </Fab>
     </>
   );
-
 }

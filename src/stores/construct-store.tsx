@@ -43,7 +43,7 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
           construct.id === id ? { ...construct, ...newConstruct } : construct
         ),
       })),
-    addConstruct: (newConstruct: StoreConstruct) => 
+    addConstruct: (newConstruct: StoreConstruct) =>
       set((state) => ({
         constructs: [...state.constructs, newConstruct],
       })),

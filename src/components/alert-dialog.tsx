@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import type { Dispatch, SetStateAction } from 'react';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import type { Dispatch, SetStateAction } from "react";
 
 export interface AlertDialogProps {
   isOpen: boolean;
@@ -14,11 +14,10 @@ export interface AlertDialogProps {
 }
 
 export default function AlertDialog(props: AlertDialogProps) {
-
   const confirmDelete = () => {
     props.setOpen(false);
     props.setDelete(true);
-  }
+  };
 
   const handleClose = () => {
     props.setOpen(false);

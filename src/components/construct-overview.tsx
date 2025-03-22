@@ -51,70 +51,66 @@ export default function ConstructOverview(props: ModalOpenProps) {
 
   useEffect(() => {
     if (activeConstruct && isOkToDelete) {
-      deleteConstruct.mutateAsync(activeConstruct.id).then(() => {
+      deleteConstruct
+        .mutateAsync(activeConstruct.id)
+        .then(() => {
           removeConstruct(activeConstruct.id);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       setOkToDelete(false);
       props.setOpen(false);
     }
   }, [isOkToDelete]);
 
-  useEffect(
-    () => {
-      async function asyncMutate() {
-        if (!activeConstruct) {
-          return;
-        }
-        return await mutateDescription.mutateAsync({
-          id: activeConstruct.id,
-          description: tempDescription,
-        });
+  useEffect(() => {
+    async function asyncMutate() {
+      if (!activeConstruct) {
+        return;
       }
+      return await mutateDescription.mutateAsync({
+        id: activeConstruct.id,
+        description: tempDescription,
+      });
+    }
 
-      const timeout = setTimeout(() => {
-        asyncMutate()
-          .then((r) => {
-            if (activeConstruct && r) {
-              setConstruct(activeConstruct?.id, mapFromApi(r));
-            }
-          })
-          .catch(console.error);
-      }, 300);
+    const timeout = setTimeout(() => {
+      asyncMutate()
+        .then((r) => {
+          if (activeConstruct && r) {
+            setConstruct(activeConstruct?.id, mapFromApi(r));
+          }
+        })
+        .catch(console.error);
+    }, 300);
 
-      return () => clearTimeout(timeout);
-    },
-    [tempDescription]
-  );
+    return () => clearTimeout(timeout);
+  }, [tempDescription]);
 
-  useEffect(
-    () => {
-      async function asyncMutate() {
-        if (!activeConstruct) {
-          return;
-        }
-        return await mutateName.mutateAsync({
-          id: activeConstruct.id,
-          name: tempName,
-        });
+  useEffect(() => {
+    async function asyncMutate() {
+      if (!activeConstruct) {
+        return;
       }
+      return await mutateName.mutateAsync({
+        id: activeConstruct.id,
+        name: tempName,
+      });
+    }
 
-      const timeout = setTimeout(() => {
-        asyncMutate()
-          .then((r) => {
-            if (activeConstruct && r) {
-              setConstruct(activeConstruct?.id, mapFromApi(r));
-            }
-          })
-          .catch(console.error);
-      }, 300);
+    const timeout = setTimeout(() => {
+      asyncMutate()
+        .then((r) => {
+          if (activeConstruct && r) {
+            setConstruct(activeConstruct?.id, mapFromApi(r));
+          }
+        })
+        .catch(console.error);
+    }, 300);
 
-      return () => clearTimeout(timeout);
-    },
-    [tempName]
-  );
+    return () => clearTimeout(timeout);
+  }, [tempName]);
 
   return (
     <>
@@ -128,7 +124,11 @@ export default function ConstructOverview(props: ModalOpenProps) {
         maxWidth="md"
       >
         <Suspense fallback={<p>Loading...</p>}>
-          <DialogTitle id="scroll-dialog-title" component="div" sx={{paddingBottom: '5px'}}>
+          <DialogTitle
+            id="scroll-dialog-title"
+            component="div"
+            sx={{ paddingBottom: "5px" }}
+          >
             <div className="flex flex-row justify-between">
               <div className="flex flex-row">
                 <div className="mr-2">
@@ -137,19 +137,17 @@ export default function ConstructOverview(props: ModalOpenProps) {
                     variant="h5"
                     component="h2"
                   >
-                    Construct Overview -  
+                    Construct Overview -
                   </Typography>
                 </div>
                 <TextField
-                id="title-edit"
-                variant="standard"
-                size="small"
-                value={tempName}
-                sx={{marginLeft: '5', marginTop: '-5'}}
-                inputProps={{style: {fontSize: '1.5rem'}}}
-                onChange={({ target }) =>
-                  setTempName(target.value)
-                }
+                  id="title-edit"
+                  variant="standard"
+                  size="small"
+                  value={tempName}
+                  sx={{ marginLeft: "5", marginTop: "-5" }}
+                  inputProps={{ style: { fontSize: "1.5rem" } }}
+                  onChange={({ target }) => setTempName(target.value)}
                 />
               </div>
               <IconButton
@@ -157,7 +155,9 @@ export default function ConstructOverview(props: ModalOpenProps) {
                 onClick={() => {
                   setAlertOpen(true);
                 }}
-              ><DeleteIcon/></IconButton>
+              >
+                <DeleteIcon />
+              </IconButton>
             </div>
           </DialogTitle>
           <DialogContent dividers={true}>
@@ -230,7 +230,11 @@ export default function ConstructOverview(props: ModalOpenProps) {
           </DialogActions>
         </Suspense>
       </Dialog>
-      <AlertDialog isOpen={isAlertOpen} setOpen={setAlertOpen} setDelete={setOkToDelete}/>
+      <AlertDialog
+        isOpen={isAlertOpen}
+        setOpen={setAlertOpen}
+        setDelete={setOkToDelete}
+      />
     </>
   );
 }
