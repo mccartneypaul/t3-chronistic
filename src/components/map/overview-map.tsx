@@ -11,11 +11,14 @@ import Draggable, {
   type DraggableEvent,
 } from "react-draggable";
 
-const mapImage = "/api/s3?file=middleearth.jpg";
+// const mapImage = "/api/s3?file=middleearth.jpg";
 
-export default function OverviewMap() {
+export interface OverviewMapProps {
+  mapUrl: string;
+}
+
+export default function OverviewMap(props: OverviewMapProps) {
   const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
-  const s3ImageUrl = React.useRef("");
   const isDraggingRef = React.useRef(false);
   const [isOpen, setOpen] = React.useState(false);
   const [viewTransformation, setViewTransformation] = React.useState({
@@ -69,7 +72,7 @@ export default function OverviewMap() {
             >
               <Image
                 className={`object-contain`}
-                src={mapImage}
+                src={`/api/s3?file=${props.mapUrl}`}
                 priority
                 alt="map"
                 quality="100"

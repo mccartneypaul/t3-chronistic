@@ -47,7 +47,10 @@ const Home: NextPage = () => {
             </Link>
           </div>
           <Button variant="contained">
-            <Link href="/overview">Overview map</Link>
+            <Link href="/world">World Map Select</Link>
+          </Button>
+          <Button variant="contained">
+            <Link href="/overview/totesacuid">Overview map</Link>
           </Button>
 
           <div className="flex flex-col items-center gap-2">

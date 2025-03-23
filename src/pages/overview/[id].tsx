@@ -5,11 +5,14 @@ import { api } from "@chronistic/utils/api";
 import { mapFromApi, type StoreConstruct } from "@chronistic/stores/construct";
 import OverviewMap from "@chronistic/components/map/overview-map";
 import { Suspense, useEffect, useState, startTransition } from "react";
-
-const hardCodedMapId = "totesacuid";
+import { useRouter } from "next/router";
 
 export default function Overview() {
-  const { data } = api.construct.getByMap.useQuery(hardCodedMapId);
+  const router = useRouter();
+  const mapId = typeof router.query.id === "string" ? router.query.id : "";
+  // TODO: Get the map using the mapId and return the url here
+  const mapUrl = "middleearth.jpg";
+  const { data } = api.construct.getByMap.useQuery(mapId);
   const [constructs, setConstructs] = useState<StoreConstruct[] | undefined>(
     undefined
   );
@@ -27,12 +30,9 @@ export default function Overview() {
       <div className="flex flex-col">
         <Suspense fallback={<div>Loading...</div>}>
           {constructs != undefined ? (
-            <ConstructStoreProvider
-              activeMapId={hardCodedMapId}
-              constructs={constructs}
-            >
+            <ConstructStoreProvider activeMapId={mapId} constructs={constructs}>
               <ResponsiveAppBar />
-              <OverviewMap />
+              <OverviewMap mapUrl={mapUrl} />
               <Timeline />
             </ConstructStoreProvider>
           ) : (
