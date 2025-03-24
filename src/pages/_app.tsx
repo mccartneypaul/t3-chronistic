@@ -5,6 +5,7 @@ import React from "react";
 import { api } from "@chronistic/utils/api";
 
 import "@chronistic/styles/globals.css";
+import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -20,9 +21,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, []);
 
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <ConstructStoreProvider>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </ConstructStoreProvider>
   );
 };
 

@@ -10,6 +10,10 @@ export interface ConstructProps {
 export interface ConstructState extends ConstructProps {
   activeConstruct?: StoreConstruct;
   setConstruct: (id: string, construct: Partial<StoreConstruct>) => void;
+  setMapConstructs: (
+    mapId: string,
+    constructs: Partial<StoreConstruct[]>
+  ) => void;
   addConstruct: (construct: StoreConstruct) => void;
   removeConstruct: (id: string) => void;
   getConstructsForMap: (mapId: string) => StoreConstruct[];
@@ -42,6 +46,16 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
         constructs: state.constructs.map((construct) =>
           construct.id === id ? { ...construct, ...newConstruct } : construct
         ),
+      })),
+    setMapConstructs: (
+      mapId: string,
+      newConstructs: Partial<StoreConstruct[]>
+    ) =>
+      set(() => ({
+        activeMapId: mapId,
+        constructs: newConstructs
+          .filter((construct) => construct != undefined)
+          .map((construct) => mapFromApi(construct)),
       })),
     addConstruct: (newConstruct: StoreConstruct) =>
       set((state) => ({

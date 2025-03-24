@@ -7,7 +7,7 @@ async function main() {
     create: {
       id: "totesacuid",
       name: "defaultDevMap",
-      filePath: "test",
+      filePath: "middleearth.jpg",
     },
   });
 

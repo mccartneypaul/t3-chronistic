@@ -1,10 +1,10 @@
 "use client";
 
 import { createContext, useRef, useContext } from "react";
+import type { ReactNode } from "react";
 import { useStore } from "zustand";
 
 import {
-  type ConstructProps,
   type ConstructState,
   type ConstructStore,
   createConstructStore,
@@ -14,15 +14,17 @@ import {
 
 export const ConstructStoreContext = createContext<ConstructStore | null>(null);
 
-type ConstructStoreProviderProps = React.PropsWithChildren<ConstructProps>;
+export interface ConstructStoreProviderProps {
+  children: ReactNode;
+}
+// type ConstructStoreProviderProps = React.PropsWithChildren<ConstructProps>;
 
 export const ConstructStoreProvider = ({
   children,
-  ...props
 }: ConstructStoreProviderProps) => {
   const storeRef = useRef<ConstructStore>();
   if (!storeRef.current) {
-    storeRef.current = createConstructStore(props);
+    storeRef.current = createConstructStore();
   }
   return (
     <ConstructStoreContext.Provider value={storeRef.current}>

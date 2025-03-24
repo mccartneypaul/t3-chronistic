@@ -11,8 +11,6 @@ import Draggable, {
   type DraggableEvent,
 } from "react-draggable";
 
-// const mapImage = "/api/s3?file=middleearth.jpg";
-
 export interface OverviewMapProps {
   mapUrl: string;
 }
@@ -74,7 +72,7 @@ export default function OverviewMap(props: OverviewMapProps) {
                 className={`object-contain`}
                 src={`/api/s3?file=${props.mapUrl}`}
                 priority
-                alt="map"
+                alt="Map image"
                 quality="100"
                 ref={nodeRef}
                 fill
