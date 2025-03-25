@@ -11,12 +11,21 @@ export const mapRouter = createTRPCRouter({
     });
   }),
 
+  getByWorld: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+    return ctx.prisma.map.findMany({
+      where: {
+        worldId: input,
+      },
+    });
+  }),
+
   createMap: publicProcedure
     .input(
       z.object({
         data: z.object({
           name: z.string(),
           filePath: z.string(),
+          worldId: z.string(),
         }),
       })
     )
