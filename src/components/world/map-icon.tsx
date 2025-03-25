@@ -13,6 +13,7 @@ export default function MapIcon(props: MapIconProps) {
   return (
     <Card key={props.id}>
       <CardActionArea
+        href={`/overview/${props.id}`}
         sx={{
           height: "100%",
           "&[data-active]": {

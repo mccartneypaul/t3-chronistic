@@ -11,6 +11,16 @@ async function main() {
     },
   });
 
+  const testMap = await prisma.map.upsert({
+    where: { id: "anothercuid" },
+    update: {},
+    create: {
+      id: "anothercuid",
+      name: "testDevMap",
+      filePath: "TestWorldMap.png",
+    },
+  });
+
   const explorerJeff = await prisma.construct.upsert({
     where: { id: "alsototesacuid" },
     update: {},
