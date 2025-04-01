@@ -119,7 +119,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
         scroll="paper"
         onClose={() => props.setOpen(false)}
         aria-labelledby="child-modal-title"
-        className="min-w-500 max-w-750"
+        className="max-w-750 min-w-500"
         fullWidth={true}
         maxWidth="md"
       >
@@ -194,7 +194,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
                 </span>
 
                 <Divider
-                  className="ml-10 mr-10"
+                  className="mr-10 ml-10"
                   flexItem
                   orientation="vertical"
                 />
@@ -220,7 +220,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
               </div>
             </div>
           </DialogContent>
-          <DialogActions className="flex flex-row justify-between pb-3 pl-3 pr-3">
+          <DialogActions className="flex flex-row justify-between pr-3 pb-3 pl-3">
             <Button variant="contained" color="primary">
               Picture File Notes
             </Button>

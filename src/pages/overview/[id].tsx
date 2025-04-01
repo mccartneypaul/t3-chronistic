@@ -10,6 +10,9 @@ import { useRouter } from "next/router";
 export default function Overview() {
   const router = useRouter();
   const mapId = typeof router.query.id === "string" ? router.query.id : "";
+  // const mapData = {
+  //   filePath: "/images/maps/overview.png",
+  // };
   const { data: mapData } = api.map.getById.useQuery(mapId);
   const { data: constructData } = api.construct.getByMap.useQuery(mapId);
 

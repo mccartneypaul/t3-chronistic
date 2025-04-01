@@ -22,7 +22,7 @@ export interface ConstructStoreProviderProps {
 export const ConstructStoreProvider = ({
   children,
 }: ConstructStoreProviderProps) => {
-  const storeRef = useRef<ConstructStore>();
+  const storeRef = useRef<ConstructStore | null>(null);
   if (!storeRef.current) {
     storeRef.current = createConstructStore();
   }
@@ -34,13 +34,13 @@ export const ConstructStoreProvider = ({
 };
 
 export const useConstructContext = <T,>(
-  selector: (state: ConstructState) => T
+  selector: (state: ConstructState) => T,
 ): T => {
   const constructStoreContext = useContext(ConstructStoreContext);
 
   if (!constructStoreContext) {
     throw new Error(
-      `useConstructStore must be used within ConstructStoreProvider`
+      `useConstructStore must be used within ConstructStoreProvider`,
     );
   }
 

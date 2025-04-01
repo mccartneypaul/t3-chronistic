@@ -5,8 +5,8 @@ import CardContent from "@mui/material/CardContent";
 export interface MapIconProps {
   id: string;
   name: string;
-  description: string;
-  imageUrl: string;
+  description?: string;
+  filePath: string;
 }
 
 export default function MapIcon(props: MapIconProps) {
@@ -27,7 +27,8 @@ export default function MapIcon(props: MapIconProps) {
         <CardMedia
           component="img"
           height="140"
-          image={props.imageUrl}
+          // TODO: Grab this from s3
+          image={props.filePath}
           alt="Map Image"
         />
         <CardContent sx={{ height: "100%" }}>

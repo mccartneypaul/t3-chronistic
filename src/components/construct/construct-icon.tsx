@@ -30,14 +30,14 @@ function ConstructIcon({
   boundingBox,
   viewTransformation,
 }: ConstructIconProps) {
-  const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
+  const nodeRef = React.useRef<HTMLDivElement>(null); // To suppress the warning about the ref in strict mode
   const [tempPosition, setTempPosition] = useState({ posX: 0, posY: 0 });
   const thisConstruct = useConstructContext((state) =>
-    state.constructs.find((c) => c.id === constructId)
+    state.constructs.find((c) => c.id === constructId),
   );
   const isDraggingRef = useRef(false);
   const setActiveConstruct = useConstructContext(
-    (state) => state.setActiveConstruct
+    (state) => state.setActiveConstruct,
   );
   const setConstruct = useConstructContext((state) => state.setConstruct);
   const mutatePostition = api.construct.patchPosition.useMutation();
@@ -48,7 +48,7 @@ function ConstructIcon({
       const pos = translatePositionForView(
         boundingBox,
         viewTransformation,
-        thisConstruct
+        thisConstruct,
       );
       setTempPosition(validatePositionInBoundingBox(pos));
     }
@@ -88,7 +88,7 @@ function ConstructIcon({
       const storePosition = translatePositionForStore(
         boundingBox,
         viewTransformation,
-        tempPosition
+        tempPosition,
       );
       return await mutatePostition.mutateAsync({
         id: constructId,
@@ -107,7 +107,7 @@ function ConstructIcon({
 
   return (
     <Draggable
-      nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
+      nodeRef={nodeRef as React.RefObject<HTMLElement>} // To suppress the warning about the ref in strict mode
       onStop={onStop}
       onDrag={onDrag}
       position={{ y: tempPosition.posY, x: tempPosition.posX }}

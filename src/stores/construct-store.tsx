@@ -12,18 +12,18 @@ export interface ConstructState extends ConstructProps {
   setConstruct: (id: string, construct: Partial<StoreConstruct>) => void;
   setMapConstructs: (
     mapId: string,
-    constructs: Partial<StoreConstruct[]>
+    constructs: Partial<StoreConstruct[]>,
   ) => void;
   addConstruct: (construct: StoreConstruct) => void;
   removeConstruct: (id: string) => void;
-  getConstructsForMap: (mapId: string) => StoreConstruct[];
+  // getConstructsForMap: (mapId: string) => StoreConstruct[];
   setActiveConstruct: (constructId: string) => void;
 }
 
 export type ConstructStore = ReturnType<typeof createConstructStore>;
 
 export const initConstructStore = async (
-  mapId: string
+  mapId: string,
 ): Promise<ConstructProps> => {
   const query = api.construct.getByMap.useQuery(mapId);
   await query.refetch();
@@ -44,12 +44,12 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
     setConstruct: (id: string, newConstruct: Partial<StoreConstruct>) =>
       set((state) => ({
         constructs: state.constructs.map((construct) =>
-          construct.id === id ? { ...construct, ...newConstruct } : construct
+          construct.id === id ? { ...construct, ...newConstruct } : construct,
         ),
       })),
     setMapConstructs: (
       mapId: string,
-      newConstructs: Partial<StoreConstruct[]>
+      newConstructs: Partial<StoreConstruct[]>,
     ) =>
       set(() => ({
         activeMapId: mapId,
@@ -65,18 +65,18 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
       set((state) => ({
         constructs: state.constructs.filter((construct) => construct.id !== id),
       })),
-    getConstructsForMap: (mapId: string): StoreConstruct[] => {
-      const constructs =
-        api.construct.getByMap
-          .useQuery(mapId)
-          .data?.map((construct) => mapFromApi(construct)) ?? [];
-      set(() => ({ constructs }));
-      return constructs;
-    },
+    // getConstructsForMap: (mapId: string): StoreConstruct[] => {
+    //   const constructs =
+    //     api.construct.getByMap
+    //       .useQuery(mapId)
+    //       .data?.map((construct) => mapFromApi(construct)) ?? [];
+    //   set(() => ({ constructs }));
+    //   return constructs;
+    // },
     setActiveConstruct: (constructId: string) =>
       set((state) => ({
         activeConstruct: state.constructs.find(
-          (construct) => construct.id === constructId
+          (construct) => construct.id === constructId,
         ),
       })),
   }));

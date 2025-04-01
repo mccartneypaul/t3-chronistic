@@ -16,7 +16,7 @@ export interface OverviewMapProps {
 }
 
 export default function OverviewMap(props: OverviewMapProps) {
-  const nodeRef = React.useRef(null); // To suppress the warning about the ref in strict mode
+  const nodeRef = React.useRef<HTMLImageElement>(null); // To suppress the warning about the ref in strict mode
   const isDraggingRef = React.useRef(false);
   const [isOpen, setOpen] = React.useState(false);
   const [viewTransformation, setViewTransformation] = React.useState({
@@ -31,7 +31,7 @@ export default function OverviewMap(props: OverviewMapProps) {
     state.constructs.map((construct) => ({
       ...construct,
       ...translatePositionForView(boundingBox, viewTransformation, construct),
-    }))
+    })),
   );
 
   useEffect(() => {
@@ -60,10 +60,10 @@ export default function OverviewMap(props: OverviewMapProps) {
       <Suspense fallback={<p>Loading...</p>}>
         <div className="overflow-hidden">
           <div
-            className={`aspect-auto relative h-[37vw] transform overflow-hidden scale-${viewTransformation.scale}`}
+            className={`relative aspect-auto h-[37vw] transform overflow-hidden scale-${viewTransformation.scale}`}
           >
             <Draggable
-              nodeRef={nodeRef} // To suppress the warning about the ref in strict mode
+              nodeRef={nodeRef as React.RefObject<HTMLElement>} // To suppress the warning about the ref in strict mode
               onStop={onStop}
               onDrag={onDrag}
               scale={viewTransformation.scale / 100}
@@ -80,7 +80,7 @@ export default function OverviewMap(props: OverviewMapProps) {
                 onLoad={(e) => {
                   console.log(
                     "Image loaded",
-                    e.currentTarget.getBoundingClientRect()
+                    e.currentTarget.getBoundingClientRect(),
                   );
                   setBoundingBox(e.currentTarget.getBoundingClientRect());
                 }}
@@ -106,7 +106,7 @@ export default function OverviewMap(props: OverviewMapProps) {
                 construct.posX >= boundingBox.left &&
                 construct.posX <= boundingBox.right &&
                 construct.posY >= boundingBox.top &&
-                construct.posY <= boundingBox.bottom
+                construct.posY <= boundingBox.bottom,
             )
             .map((construct) => (
               <ConstructIcon

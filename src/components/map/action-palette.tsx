@@ -11,7 +11,7 @@ export interface ViewTransformationProps {
 
 export function ActionPallette(props: ViewTransformationProps) {
   return (
-    <div className="absolute left-3 top-10 m-10 flex flex-col space-y-4">
+    <div className="absolute top-10 left-3 m-10 flex flex-col space-y-4">
       <ZoomIn
         viewTransformation={props.viewTransformation}
         setViewTransformation={props.setViewTransformation}

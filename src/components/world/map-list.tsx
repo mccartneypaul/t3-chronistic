@@ -1,30 +1,12 @@
 import Box from "@mui/material/Box";
 import React from "react";
 import MapIcon from "./map-icon";
-
-const cards = [
-  {
-    id: "totesacuid",
-    title: "Plants",
-    description: "Plants are essential for all life.",
-    imageUrl: "middleearth.jpg",
-  },
-  {
-    id: 2,
-    title: "Animals",
-    description: "Animals are a part of nature.",
-    imageUrl: "TestWorldMap.png",
-  },
-  {
-    id: 3,
-    title: "Humans",
-    description: "Humans depend on plants and animals for survival.",
-    imageUrl: "",
-  },
-];
+import { api } from "@chronistic/utils/api";
 
 export default function MapList() {
-  // const [selectedCard, setSelectedCard] = React.useState(0);
+  const worldId = "myworldscuidwowowow";
+  const { data } = api.map.getByWorld.useQuery(worldId);
+
   return (
     <Box
       sx={{
@@ -35,15 +17,15 @@ export default function MapList() {
         p: 2,
       }}
     >
-      {cards.map((card, index) => (
-        <MapIcon
-          key={card.id}
-          id={String(card.id)}
-          name={card.title}
-          description={card.description}
-          imageUrl={card.imageUrl}
-        />
-      ))}
+      {data &&
+        data.map((card) => (
+          <MapIcon
+            key={card.id}
+            id={String(card.id)}
+            name={card.name}
+            filePath={card.filePath}
+          />
+        ))}
     </Box>
   );
 }
