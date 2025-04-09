@@ -10,12 +10,14 @@ import Draggable, {
   type DraggableData,
   type DraggableEvent,
 } from "react-draggable";
+import { api } from "@chronistic/utils/api";
 
 export interface OverviewMapProps {
   mapUrl: string;
 }
 
 export default function OverviewMap(props: OverviewMapProps) {
+  const { data: mapImage } = api.s3.getByKey.useQuery(props.mapUrl);
   const nodeRef = React.useRef<HTMLImageElement>(null); // To suppress the warning about the ref in strict mode
   const isDraggingRef = React.useRef(false);
   const [isOpen, setOpen] = React.useState(false);
@@ -70,7 +72,7 @@ export default function OverviewMap(props: OverviewMapProps) {
             >
               <Image
                 className={`object-contain`}
-                src={`/api/s3?file=${props.mapUrl}`}
+                src={`data:image/png;base64,${Buffer.from(mapImage ?? []).toString("base64")}`}
                 priority
                 alt="Map image"
                 quality="100"

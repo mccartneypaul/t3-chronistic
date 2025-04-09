@@ -2,10 +2,12 @@ import Box from "@mui/material/Box";
 import React from "react";
 import MapIcon from "./map-icon";
 import { api } from "@chronistic/utils/api";
+import Dropzone from "../drop-zone";
 
 export default function MapList() {
   const worldId = "myworldscuidwowowow";
   const { data } = api.map.getByWorld.useQuery(worldId);
+  
 
   return (
     <Box
@@ -26,6 +28,7 @@ export default function MapList() {
             filePath={card.filePath}
           />
         ))}
+      <Dropzone />
     </Box>
   );
 }
