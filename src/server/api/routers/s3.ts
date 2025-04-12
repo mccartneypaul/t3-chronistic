@@ -16,6 +16,11 @@ const client = new S3Client({
   },
 });
 
+type S3Image = {
+  u8Stream: Uint8Array;
+  fileType: string;
+};
+
 export const s3Router = createTRPCRouter({
   getByKey: publicProcedure.input(z.string()).query(async ({ input }) => {
     const command = new GetObjectCommand({
@@ -30,7 +35,11 @@ export const s3Router = createTRPCRouter({
           message: "Image not found",
         });
       }
-      return await data.Body.transformToByteArray();
+      const image: S3Image = {
+        u8Stream: await data.Body.transformToByteArray(),
+        fileType: data.ContentType || "image/jpeg",
+      };
+      return image;
     } catch (error) {
       console.error("Error fetching image from S3:", error);
       throw new TRPCError({
@@ -40,4 +49,50 @@ export const s3Router = createTRPCRouter({
       });
     }
   }),
+  deleteByKey: publicProcedure.input(z.string()).mutation(async ({ input }) => {
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: input,
+    });
+    try {
+      await client.send(command);
+      return { message: "Image deleted successfully" };
+    } catch (error) {
+      console.error("Error deleting image from S3:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error deleting image from S3",
+        cause: error,
+      });
+    }
+  }),
+  uploadImage: publicProcedure
+    .input(
+      z.object({
+        data: z.object({
+          fileName: z.string(),
+          fileType: z.string(),
+          fileBlob: z.any(),
+        }),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const command = new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: input.data.fileName,
+        Body: input.data.fileBlob,
+        ContentType: input.data.fileType,
+      });
+      try {
+        await client.send(command);
+        return { message: "Image uploaded successfully" };
+      } catch (error) {
+        console.error("Error uploading image to S3:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error uploading image to S3",
+          cause: error,
+        });
+      }
+    }),
 });

@@ -72,7 +72,7 @@ export default function OverviewMap(props: OverviewMapProps) {
             >
               <Image
                 className={`object-contain`}
-                src={`data:image/png;base64,${Buffer.from(mapImage ?? []).toString("base64")}`}
+                src={`data:${mapImage?.fileType};base64,${Buffer.from(mapImage?.u8Stream ?? []).toString("base64")}`}
                 priority
                 alt="Map image"
                 quality="100"
