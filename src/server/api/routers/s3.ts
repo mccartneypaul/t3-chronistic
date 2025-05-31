@@ -72,15 +72,18 @@ export const s3Router = createTRPCRouter({
         data: z.object({
           fileName: z.string(),
           fileType: z.string(),
-          fileBlob: z.any(),
+          fileBlob: z.instanceof(Uint8Array).or(z.array(z.number())),
         }),
       }),
     )
     .mutation(async ({ input }) => {
+      // Ensure we have a buffer for the data
+      const buffer = Buffer.from(input.data.fileBlob);
+
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: input.data.fileName,
-        Body: input.data.fileBlob,
+        Body: buffer,
         ContentType: input.data.fileType,
       });
       try {

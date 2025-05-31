@@ -42,27 +42,38 @@ export default function Dropzone(props: DropZoneProps) {
     setUploading(true);
 
     try {
-      acceptedFiles.forEach((file) => {
-        createMap.mutate({
-          data: {
-            name: file.name,
-            worldId: props.worldId,
-            filePath: file.name,
-          },
-        });
-        uploadImage.mutate({
-          data: {
-            fileName: file.name,
-            fileType: file.type,
-            fileBlob: file,
-          },
-        });
-      });
+      for (const file of acceptedFiles) {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
 
-      alert("Files uploaded successfully!");
-    } catch (error) {
-      console.error("Error uploading image to S3:", error);
-      alert("Failed to upload image to S3. Please try again.");
+          await uploadImage
+            .mutateAsync({
+              data: {
+                fileName: file.name,
+                fileType: file.type,
+                fileBlob: uint8Array,
+              },
+            })
+            .then(() => {
+              createMap.mutate({
+                data: {
+                  name: file.name,
+                  worldId: props.worldId,
+                  filePath: file.name,
+                },
+              });
+            })
+            .catch((error) => {
+              console.error(`Failed to upload ${file.name}:`, error);
+              throw new Error(`Failed to upload ${file.name}`);
+            });
+
+          // Create map entry after successful upload
+        } catch (error) {
+          alert("Failed to upload images");
+        }
+      }
     } finally {
       setUploading(false);
     }
