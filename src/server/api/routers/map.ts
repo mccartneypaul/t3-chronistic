@@ -27,7 +27,7 @@ export const mapRouter = createTRPCRouter({
           filePath: z.string(),
           worldId: z.string(),
         }),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // Create a new map in the database
@@ -36,6 +36,7 @@ export const mapRouter = createTRPCRouter({
     }),
 
   deleteMap: publicProcedure
+    // TODO: remove children of map before deleting
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const map = await ctx.prisma.map.delete({
@@ -51,7 +52,7 @@ export const mapRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const map = await ctx.prisma.map.update({

@@ -8,6 +8,8 @@ export default function MapList() {
   const worldId = "myworldscuidwowowow";
   const { data } = api.map.getByWorld.useQuery(worldId);
 
+  // TODO: make the maps pull from the store so that they get updated when a new map is added
+
   return (
     <Box
       sx={{
