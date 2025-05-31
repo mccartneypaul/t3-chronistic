@@ -9,8 +9,13 @@ const MAX_FILE_SIZE_MB = 2;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_IMAGE_COUNT = 3;
 
-export default function Dropzone() {
+export interface DropZoneProps {
+  worldId: string;
+}
+
+export default function Dropzone(props: DropZoneProps) {
   const createMap = api.map.createMap.useMutation();
+  const uploadImage = api.s3.uploadImage.useMutation();
   const [uploading, setUploading] = useState<boolean>(false);
 
   const typeValidator = (file: File): FileError | null => {
@@ -37,15 +42,21 @@ export default function Dropzone() {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      acceptedFiles.forEach((file) => formData.append("file", file));
-
-      const response = await fetch(`/api/s3`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: formData,
+      acceptedFiles.forEach((file) => {
+        createMap.mutate({
+          data: {
+            name: file.name,
+            worldId: props.worldId,
+            filePath: file.name,
+          },
+        });
+        uploadImage.mutate({
+          data: {
+            fileName: file.name,
+            fileType: file.type,
+            fileBlob: file,
+          },
+        });
       });
 
       alert("Files uploaded successfully!");
@@ -54,13 +65,6 @@ export default function Dropzone() {
       alert("Failed to upload image to S3. Please try again.");
     } finally {
       setUploading(false);
-      // TODO: fix this.
-      // createMap.mutate({
-      //   name: "New Map",
-      //   description: "New Map Description",
-      //   worldId: "myworldscuidwowowow",
-      //   filePath: "path/to/your/image.jpg",
-      // });
     }
   };
 

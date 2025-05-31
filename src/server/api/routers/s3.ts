@@ -84,8 +84,8 @@ export const s3Router = createTRPCRouter({
         ContentType: input.data.fileType,
       });
       try {
-        await client.send(command);
-        return { message: "Image uploaded successfully" };
+        const resp = await client.send(command);
+        return { message: "Response from AWS: ", resp };
       } catch (error) {
         console.error("Error uploading image to S3:", error);
         throw new TRPCError({
