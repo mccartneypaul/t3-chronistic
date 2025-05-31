@@ -62,7 +62,8 @@ export default function OverviewMap(props: OverviewMapProps) {
       <Suspense fallback={<p>Loading...</p>}>
         <div className="overflow-hidden">
           <div
-            className={`relative aspect-auto h-[37vw] transform overflow-hidden scale-${viewTransformation.scale}`}
+            className="relative aspect-auto h-[37vw] overflow-hidden"
+            style={{ transform: `scale(${viewTransformation.scale / 100})` }}
           >
             <Draggable
               nodeRef={nodeRef as React.RefObject<HTMLElement>} // To suppress the warning about the ref in strict mode
