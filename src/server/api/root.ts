@@ -3,6 +3,7 @@ import { exampleRouter } from "@chronistic/server/api/routers/example";
 import { constructRouter } from "@chronistic/server/api/routers/construct";
 import { mapRouter } from "@chronistic/server/api/routers/map";
 import { s3Router } from "@chronistic/server/api/routers/s3";
+import { worldRouter } from "./routers/world";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   construct: constructRouter,
   map: mapRouter,
   s3: s3Router,
+  world: worldRouter,
 });
 
 // export type definition of API

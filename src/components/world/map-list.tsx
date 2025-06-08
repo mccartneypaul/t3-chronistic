@@ -5,8 +5,8 @@ import { api } from "@chronistic/utils/api";
 import Dropzone from "../drop-zone";
 
 export default function MapList() {
-  const worldId = "myworldscuidwowowow";
-  const { data } = api.map.getByWorld.useQuery(worldId);
+  const { data: worldData } = api.world.getByUser.useQuery();
+  const { data: mapData } = api.map.getByWorld.useQuery(worldData?.id ?? "");
 
   // TODO: make the maps pull from the store so that they get updated when a new map is added
 
@@ -20,8 +20,9 @@ export default function MapList() {
         p: 2,
       }}
     >
-      {data &&
-        data.map((card) => (
+      {worldData &&
+        mapData &&
+        mapData.map((card) => (
           <MapIcon
             key={card.id}
             id={String(card.id)}
@@ -29,7 +30,7 @@ export default function MapList() {
             filePath={card.filePath}
           />
         ))}
-      <Dropzone worldId={worldId} />
+      {worldData && <Dropzone worldId={worldData.id} />}
     </Box>
   );
 }

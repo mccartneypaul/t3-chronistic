@@ -57,6 +57,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  worlds        World[]
 }
 
 model VerificationToken {
@@ -74,6 +75,8 @@ model World {
   id        String   @id @default(cuid())
   name      String
   map       Map[]
+  user      User     @relation(fields: [userId], references: [id]) // TODO: remove optionality
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -85,6 +88,7 @@ model Map {
   world      World       @relation(fields: [worldId], references: [id])
   worldId    String
   constructs Construct[]
+  positions  Position[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -93,8 +97,21 @@ model Construct {
   id          String   @id @default(cuid())
   name        String
   description String
+  map         Map      @relation(fields: [mapId], references: [id]) // TODO: remove this field
+  mapId       String // TODO: remove this field
+  posX        Int // TODO: remove this field
+  posY        Int // TODO: remove this field
+  position    Position[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Position {
+  id          String   @id @default(cuid())
   map         Map      @relation(fields: [mapId], references: [id])
   mapId       String
+  construct   Construct @relation(fields: [constructId], references: [id])
+  constructId String
   posX        Int
   posY        Int
   createdAt   DateTime @default(now())

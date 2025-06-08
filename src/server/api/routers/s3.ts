@@ -1,4 +1,7 @@
-import { createTRPCRouter, publicProcedure } from "@chronistic/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+} from "@chronistic/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
@@ -22,7 +25,7 @@ type S3Image = {
 };
 
 export const s3Router = createTRPCRouter({
-  getByKey: publicProcedure.input(z.string()).query(async ({ input }) => {
+  getByKey: protectedProcedure.input(z.string()).query(async ({ input }) => {
     const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: input,
@@ -49,24 +52,26 @@ export const s3Router = createTRPCRouter({
       });
     }
   }),
-  deleteByKey: publicProcedure.input(z.string()).mutation(async ({ input }) => {
-    const command = new DeleteObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: input,
-    });
-    try {
-      await client.send(command);
-      return { message: "Image deleted successfully" };
-    } catch (error) {
-      console.error("Error deleting image from S3:", error);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Error deleting image from S3",
-        cause: error,
+  deleteByKey: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: input,
       });
-    }
-  }),
-  uploadImage: publicProcedure
+      try {
+        await client.send(command);
+        return { message: "Image deleted successfully" };
+      } catch (error) {
+        console.error("Error deleting image from S3:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error deleting image from S3",
+          cause: error,
+        });
+      }
+    }),
+  uploadImage: protectedProcedure
     .input(
       z.object({
         data: z.object({

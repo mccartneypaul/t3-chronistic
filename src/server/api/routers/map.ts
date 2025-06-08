@@ -1,9 +1,12 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@chronistic/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+} from "@chronistic/server/api/trpc";
 
 export const mapRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+  getById: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.map.findFirst({
       where: {
         id: input,
@@ -11,7 +14,7 @@ export const mapRouter = createTRPCRouter({
     });
   }),
 
-  getByWorld: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+  getByWorld: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.map.findMany({
       where: {
         worldId: input,
@@ -19,7 +22,7 @@ export const mapRouter = createTRPCRouter({
     });
   }),
 
-  createMap: publicProcedure
+  createMap: protectedProcedure
     .input(
       z.object({
         data: z.object({
@@ -35,7 +38,7 @@ export const mapRouter = createTRPCRouter({
       return map;
     }),
 
-  deleteMap: publicProcedure
+  deleteMap: protectedProcedure
     // TODO: remove children of map before deleting
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
@@ -47,7 +50,7 @@ export const mapRouter = createTRPCRouter({
       return map;
     }),
 
-  patchName: publicProcedure
+  patchName: protectedProcedure
     .input(
       z.object({
         id: z.string(),

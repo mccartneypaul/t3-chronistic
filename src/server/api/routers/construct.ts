@@ -1,9 +1,12 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@chronistic/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+} from "@chronistic/server/api/trpc";
 
 export const constructRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+  getById: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.construct.findFirst({
       where: {
         id: input,
@@ -11,7 +14,7 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  getByMap: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+  getByMap: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.construct.findMany({
       where: {
         mapId: input,
@@ -19,7 +22,7 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  createConstruct: publicProcedure
+  createConstruct: protectedProcedure
     .input(
       z.object({
         data: z.object({
@@ -29,7 +32,7 @@ export const constructRouter = createTRPCRouter({
           posX: z.number(),
           posY: z.number(),
         }),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // Create a new construct in the database
@@ -37,7 +40,7 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  deleteConstruct: publicProcedure
+  deleteConstruct: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const construct = await ctx.prisma.construct.delete({
@@ -48,12 +51,12 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  patchDescription: publicProcedure
+  patchDescription: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         description: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const construct = await ctx.prisma.construct.update({
@@ -63,12 +66,12 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  patchName: publicProcedure
+  patchName: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         name: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const construct = await ctx.prisma.construct.update({
@@ -78,13 +81,13 @@ export const constructRouter = createTRPCRouter({
       return construct;
     }),
 
-  patchPosition: publicProcedure
+  patchPosition: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         posX: z.number(),
         posY: z.number(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const construct = await ctx.prisma.construct.update({

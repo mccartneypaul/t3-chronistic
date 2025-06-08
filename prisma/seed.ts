@@ -7,6 +7,7 @@ async function main() {
     create: {
       id: "myworldscuidwowowow",
       name: "defaultDevWorld",
+      userId: "ChangeThisToYourUserId",
     },
   });
 
