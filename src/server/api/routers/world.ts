@@ -14,4 +14,22 @@ export const worldRouter = createTRPCRouter({
       },
     });
   }),
+  // Create a new world in the database
+  createWorld: protectedProcedure
+    .input(
+      z.object({
+        data: z.object({
+          name: z.string(),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const world = await ctx.prisma.world.create({
+        data: {
+          name: input.data.name,
+          userId: ctx.session.user.id,
+        },
+      });
+      return world;
+    }),
 });

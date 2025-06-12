@@ -6,15 +6,16 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone",
   reactStrictMode: true,
   // Client side source map
   productionBrowserSourceMaps: true,
   // Server side source map
-  webpack: (config, {isServer}) => {
+  webpack: (config, { isServer }) => {
     if (isServer) {
-        config.devtool = 'source-map'
+      config.devtool = "source-map";
     }
-    return config
+    return config;
   },
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
