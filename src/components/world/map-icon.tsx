@@ -10,6 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 export interface MapIconProps {
   id: string;
@@ -22,6 +23,7 @@ export default function MapIcon(props: MapIconProps) {
   const { data: mapImage } = api.s3.getByKey.useQuery(props.filePath);
   const deleteMap = api.map.deleteMap.useMutation();
   const deleteMapImage = api.s3.deleteByKey.useMutation();
+  const removeMap = useMapContext((state) => state.removeMap);
 
   const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // TODO: Implement confirmation dialog before deletion
@@ -32,8 +34,7 @@ export default function MapIcon(props: MapIconProps) {
       .mutateAsync(props.id)
       .then((resp) => {
         if (resp) {
-          // TODO: remove the map from the store or state
-          // addConstruct(r);
+          removeMap(props.id);
         }
       })
       .catch((error) => {

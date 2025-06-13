@@ -4,6 +4,8 @@ import { FileError, FileRejection, useDropzone } from "react-dropzone";
 import React, { useState } from "react";
 
 import { api } from "@chronistic/utils/api";
+import { useMapContext } from "@chronistic/providers/map-store-provider";
+import { mapFromApi } from "@chronistic/stores/map";
 
 const MAX_FILE_SIZE_MB = 2;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -17,6 +19,7 @@ export default function Dropzone(props: DropZoneProps) {
   const createMap = api.map.createMap.useMutation();
   const uploadImage = api.s3.uploadImage.useMutation();
   const [uploading, setUploading] = useState<boolean>(false);
+  const addMap = useMapContext((state) => state.addMap);
 
   const typeValidator = (file: File): FileError | null => {
     if (file.size > MAX_FILE_SIZE_BYTES) {
@@ -56,13 +59,17 @@ export default function Dropzone(props: DropZoneProps) {
               },
             })
             .then(() => {
-              createMap.mutate({
-                data: {
-                  name: file.name,
-                  worldId: props.worldId,
-                  filePath: file.name,
-                },
-              });
+              createMap
+                .mutateAsync({
+                  data: {
+                    name: file.name,
+                    worldId: props.worldId,
+                    filePath: file.name,
+                  },
+                })
+                .then((map) => {
+                  addMap(mapFromApi(map));
+                });
             })
             .catch((error) => {
               console.error(`Failed to upload ${file.name}:`, error);

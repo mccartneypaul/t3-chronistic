@@ -7,11 +7,11 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Form from "next/form";
 import Typography from "@mui/material/Typography";
+import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 export default function MapList() {
   const [worldId, setWorldId] = useState("");
   const { data: worldData } = api.world.getByUser.useQuery();
-  const { data: mapData } = api.map.getByWorld.useQuery(worldId ?? "");
 
   const createWorld = api.world.createWorld.useMutation();
   async function createWorldFromFormData(formData: FormData) {
@@ -19,6 +19,12 @@ export default function MapList() {
     const resp = await createWorld.mutateAsync({ data: { name: worldName } });
     setWorldId(resp.id);
   }
+
+  const storeMaps = useMapContext((state) => state.maps);
+
+  // useEffect(() => {
+  //   console.log("OverviewMap re-rendered with constructs:", storeMaps);
+  // }, [storeMaps]);
 
   // console.log("World id: ", worldId);
 
@@ -88,8 +94,7 @@ export default function MapList() {
         }}
       >
         {worldId &&
-          mapData &&
-          mapData.map((card) => (
+          storeMaps.map((card) => (
             <MapIcon
               key={card.id}
               id={String(card.id)}

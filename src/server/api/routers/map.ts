@@ -64,4 +64,17 @@ export const mapRouter = createTRPCRouter({
       });
       return map;
     }),
+
+  getByUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.map.findMany({
+      where: {
+        world: {
+          userId: ctx.session.user.id,
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+  }),
 });

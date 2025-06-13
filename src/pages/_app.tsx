@@ -6,6 +6,7 @@ import { api } from "@chronistic/utils/api";
 
 import "@chronistic/styles/globals.css";
 import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
+import { MapStoreProvider } from "@chronistic/providers/map-store-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -22,9 +23,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <ConstructStoreProvider>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <MapStoreProvider>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </MapStoreProvider>
     </ConstructStoreProvider>
   );
 };
