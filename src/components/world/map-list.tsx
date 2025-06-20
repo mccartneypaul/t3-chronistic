@@ -22,19 +22,11 @@ export default function MapList() {
 
   const storeMaps = useMapContext((state) => state.maps);
 
-  // useEffect(() => {
-  //   console.log("OverviewMap re-rendered with constructs:", storeMaps);
-  // }, [storeMaps]);
-
-  // console.log("World id: ", worldId);
-
   useEffect(() => {
     if (worldData) {
       setWorldId(worldData.id);
     }
   }, [worldData]);
-
-  // TODO: make the maps pull from the store so that they get updated when a new map is added
 
   return (
     <Suspense fallback={<p>Loading...</p>}>

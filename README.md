@@ -30,3 +30,27 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 ## Seed db
 
 `npx prisma db seed`
+
+# Home Server Deployment
+
+This directory contains files needed to deploy the application to your home server.
+
+## Initial Setup
+
+1. Copy these files to your home server:
+
+   ```
+   scp -r ./deploy user@home-server:~/deployments/t3-chronistic
+   ```
+
+2. On your GitHub repository, add the following secrets:
+
+   - DOCKER_HUB_USERNAME: Your Docker Hub username
+   - DOCKER_HUB_TOKEN: Your Docker Hub access token
+   - HOME_SERVER_HOST: IP address or hostname of your home server
+   - HOME_SERVER_USERNAME: SSH username for your home server
+   - HOME_SERVER_SSH_KEY: SSH private key for connecting to your home server
+
+3. Ensure Docker and Docker Compose are installed on your home server.
+
+4. Push to your main branch to trigger the CI/CD pipeline, or manually trigger the workflow from GitHub Actions.
