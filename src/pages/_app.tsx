@@ -7,6 +7,7 @@ import { api } from "@chronistic/utils/api";
 import "@chronistic/styles/globals.css";
 import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
 import { MapStoreProvider } from "@chronistic/providers/map-store-provider";
+import { PositionStoreProvider } from "@chronistic/providers/position-store-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -22,13 +23,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, []);
 
   return (
-    <ConstructStoreProvider>
-      <MapStoreProvider>
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
-      </MapStoreProvider>
-    </ConstructStoreProvider>
+    <PositionStoreProvider>
+      <ConstructStoreProvider>
+        <MapStoreProvider>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </MapStoreProvider>
+      </ConstructStoreProvider>
+    </PositionStoreProvider>
   );
 };
 
