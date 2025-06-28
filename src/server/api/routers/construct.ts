@@ -1,4 +1,8 @@
-import { z } from "zod";
+import {
+  object as zObject,
+  string as zString,
+  number as zNumber,
+} from "zod/v4";
 
 import {
   createTRPCRouter,
@@ -6,7 +10,7 @@ import {
 } from "@chronistic/server/api/trpc";
 
 export const constructRouter = createTRPCRouter({
-  getById: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  getById: protectedProcedure.input(zString()).query(({ ctx, input }) => {
     return ctx.prisma.construct.findFirst({
       where: {
         id: input,
@@ -14,7 +18,7 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  getByMap: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  getByMap: protectedProcedure.input(zString()).query(({ ctx, input }) => {
     return ctx.prisma.construct.findMany({
       where: {
         mapId: input,
@@ -24,13 +28,13 @@ export const constructRouter = createTRPCRouter({
 
   createConstruct: protectedProcedure
     .input(
-      z.object({
-        data: z.object({
-          name: z.string(),
-          description: z.string(),
-          mapId: z.string(),
-          posX: z.number(),
-          posY: z.number(),
+      zObject({
+        data: zObject({
+          name: zString(),
+          description: zString(),
+          mapId: zString(),
+          posX: zNumber(),
+          posY: zNumber(),
         }),
       }),
     )
@@ -41,7 +45,7 @@ export const constructRouter = createTRPCRouter({
     }),
 
   deleteConstruct: protectedProcedure
-    .input(z.string())
+    .input(zString())
     .mutation(async ({ ctx, input }) => {
       const construct = await ctx.prisma.construct.delete({
         where: {
@@ -53,9 +57,9 @@ export const constructRouter = createTRPCRouter({
 
   patchDescription: protectedProcedure
     .input(
-      z.object({
-        id: z.string(),
-        description: z.string(),
+      zObject({
+        id: zString(),
+        description: zString(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -68,9 +72,9 @@ export const constructRouter = createTRPCRouter({
 
   patchName: protectedProcedure
     .input(
-      z.object({
-        id: z.string(),
-        name: z.string(),
+      zObject({
+        id: zString(),
+        name: zString(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -83,10 +87,10 @@ export const constructRouter = createTRPCRouter({
 
   patchPosition: protectedProcedure
     .input(
-      z.object({
-        id: z.string(),
-        posX: z.number(),
-        posY: z.number(),
+      zObject({
+        id: zString(),
+        posX: zNumber(),
+        posY: zNumber(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

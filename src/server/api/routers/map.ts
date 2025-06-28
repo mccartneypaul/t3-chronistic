@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { object as zObject, string as zString } from "zod/v4";
 
 import {
   createTRPCRouter,
@@ -6,7 +6,7 @@ import {
 } from "@chronistic/server/api/trpc";
 
 export const mapRouter = createTRPCRouter({
-  getById: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  getById: protectedProcedure.input(zString()).query(({ ctx, input }) => {
     return ctx.prisma.map.findFirst({
       where: {
         id: input,
@@ -14,7 +14,7 @@ export const mapRouter = createTRPCRouter({
     });
   }),
 
-  getByWorld: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  getByWorld: protectedProcedure.input(zString()).query(({ ctx, input }) => {
     return ctx.prisma.map.findMany({
       where: {
         worldId: input,
@@ -24,11 +24,11 @@ export const mapRouter = createTRPCRouter({
 
   createMap: protectedProcedure
     .input(
-      z.object({
-        data: z.object({
-          name: z.string(),
-          filePath: z.string(),
-          worldId: z.string(),
+      zObject({
+        data: zObject({
+          name: zString(),
+          filePath: zString(),
+          worldId: zString(),
         }),
       }),
     )
@@ -40,7 +40,7 @@ export const mapRouter = createTRPCRouter({
 
   deleteMap: protectedProcedure
     // TODO: remove children of map before deleting
-    .input(z.string())
+    .input(zString())
     .mutation(async ({ ctx, input }) => {
       const map = await ctx.prisma.map.delete({
         where: {
@@ -52,9 +52,9 @@ export const mapRouter = createTRPCRouter({
 
   patchName: protectedProcedure
     .input(
-      z.object({
-        id: z.string(),
-        name: z.string(),
+      zObject({
+        id: zString(),
+        name: zString(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
