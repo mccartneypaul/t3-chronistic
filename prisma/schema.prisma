@@ -109,13 +109,14 @@ model Construct {
 }
 
 model Position {
-  id          String   @id @default(cuid())
-  map         Map      @relation(fields: [mapId], references: [id])
-  mapId       String
-  construct   Construct @relation(fields: [constructId], references: [id])
-  constructId String
-  posX        Int
-  posY        Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  map                   Map      @relation(fields: [mapId], references: [id])
+  mapId                 String
+  construct             Construct @relation(fields: [constructId], references: [id])
+  constructId           String
+  posX                  Int
+  posY                  Int
+  intervalFromBeginning Unsupported("interval") @default(dbgenerated("'0 seconds'::interval"))
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
