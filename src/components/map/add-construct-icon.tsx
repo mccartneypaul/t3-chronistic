@@ -15,8 +15,8 @@ export function AddConstructIcon() {
       name: "New Construct",
       description: "New Construct Description",
       mapId: activeMapId,
-      posX: clientX,
-      posY: clientY,
+      posX: clientX + 15,
+      posY: clientY + 15,
     };
     console.log(newConstruct);
 

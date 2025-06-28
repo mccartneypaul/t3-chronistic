@@ -65,14 +65,6 @@ export const createConstructStore = (initState?: Partial<ConstructState>) => {
       set((state) => ({
         constructs: state.constructs.filter((construct) => construct.id !== id),
       })),
-    // getConstructsForMap: (mapId: string): StoreConstruct[] => {
-    //   const constructs =
-    //     api.construct.getByMap
-    //       .useQuery(mapId)
-    //       .data?.map((construct) => mapFromApi(construct)) ?? [];
-    //   set(() => ({ constructs }));
-    //   return constructs;
-    // },
     setActiveConstruct: (constructId: string) =>
       set((state) => ({
         activeConstruct: state.constructs.find(

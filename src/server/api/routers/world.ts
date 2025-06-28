@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { object as zObject, string as zString } from "zod/v4";
 
 import {
   createTRPCRouter,
@@ -17,9 +17,9 @@ export const worldRouter = createTRPCRouter({
   // Create a new world in the database
   createWorld: protectedProcedure
     .input(
-      z.object({
-        data: z.object({
-          name: z.string(),
+      zObject({
+        data: zObject({
+          name: zString(),
         }),
       }),
     )
