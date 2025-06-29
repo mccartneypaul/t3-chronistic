@@ -103,13 +103,13 @@ export default function Dropzone(props: DropZoneProps) {
     <div>
       <div
         {...getRootProps()}
-        className="cursor-pointer rounded-lg border-2 border-dashed border-slate-200 p-8 text-center duration-200 hover:bg-slate-300/85"
+        className="h-50 cursor-pointer rounded-lg border-2 border-dashed border-slate-200 p-8 text-center text-slate-100 duration-200 hover:bg-slate-300/85"
       >
         <input {...getInputProps()} />
         {isDragActive ? (
           <p>Drop the files here ...</p>
         ) : (
-          <p className="text-slate-100">
+          <p>
             {`Drag and drop some files here, or click to select files (up to ${MAX_IMAGE_COUNT} images, max ${MAX_FILE_SIZE_MB}MB each)`}
           </p>
         )}
