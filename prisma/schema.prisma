@@ -16,12 +16,6 @@ datasource db {
   directUrl = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 //------------------------
 // Necessary for Next auth
 //------------------------
@@ -89,7 +83,6 @@ model Map {
   filePath   String
   world      World       @relation(fields: [worldId], references: [id])
   worldId    String
-  constructs Construct[]
   positions  Position[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -99,17 +92,15 @@ model Construct {
   id          String   @id @default(cuid())
   name        String
   description String
-  map         Map      @relation(fields: [mapId], references: [id]) // TODO: remove this field
-  mapId       String // TODO: remove this field
-  posX        Int // TODO: remove this field
-  posY        Int // TODO: remove this field
-  position    Position[]
+  positions   Position[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
+// Because Prisma does not support the interval type, all of the prisma generated stuff doesn't work
+// So instead we use dbgenerated to get the default values
 model Position {
-  id                    String   @id @default(cuid())
+  id                    String   @id @default(dbgenerated("gen_random_uuid()"))
   map                   Map      @relation(fields: [mapId], references: [id])
   mapId                 String
   construct             Construct @relation(fields: [constructId], references: [id])
@@ -117,6 +108,8 @@ model Position {
   posX                  Int
   posY                  Int
   intervalFromBeginning Unsupported("interval") @default(dbgenerated("'0 seconds'::interval"))
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt             DateTime @default(dbgenerated("now()"))
+  updatedAt             DateTime @default(dbgenerated("now()"))
+
+  @@unique([mapId, constructId, intervalFromBeginning])  
 }
