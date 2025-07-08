@@ -1,5 +1,4 @@
 import { createTRPCRouter } from "@chronistic/server/api/trpc";
-import { exampleRouter } from "@chronistic/server/api/routers/example";
 import { constructRouter } from "@chronistic/server/api/routers/construct";
 import { mapRouter } from "@chronistic/server/api/routers/map";
 import { s3Router } from "@chronistic/server/api/routers/s3";
@@ -13,7 +12,6 @@ import { positionRouter } from "./routers/position";
  */
 export const appRouter = createTRPCRouter({
   construct: constructRouter,
-  example: exampleRouter,
   map: mapRouter,
   position: positionRouter,
   s3: s3Router,
