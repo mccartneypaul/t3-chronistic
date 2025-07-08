@@ -100,7 +100,7 @@ export default function OverviewMap(props: OverviewMapProps) {
       <Suspense fallback={<p>Loading...</p>}>
         <div className="overflow-hidden">
           <div
-            className="relative aspect-auto h-[37vw] overflow-hidden"
+            className="relative aspect-auto h-[42vw] overflow-hidden"
             style={{ transform: `scale(${viewTransformation.scale / 100})` }}
             onWheel={handleWheel}
           >
