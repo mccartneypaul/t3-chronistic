@@ -72,6 +72,29 @@ export default function OverviewMap(props: OverviewMapProps) {
     isDraggingRef.current = false;
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -10 : 10;
+    setViewTransformation((prev) => {
+      if (prev.scale + delta >= 500) {
+        return {
+          ...prev,
+          scale: 500,
+        };
+      } else if (prev.scale + delta <= 100) {
+        return {
+          ...prev,
+          scale: 100,
+        };
+      } else {
+        return {
+          ...prev,
+          scale: prev.scale + delta,
+        };
+      }
+    });
+  };
+
   return (
     <>
       <Suspense fallback={<p>Loading...</p>}>
@@ -79,6 +102,7 @@ export default function OverviewMap(props: OverviewMapProps) {
           <div
             className="relative aspect-auto h-[37vw] overflow-hidden"
             style={{ transform: `scale(${viewTransformation.scale / 100})` }}
+            onWheel={handleWheel}
           >
             <Draggable
               nodeRef={nodeRef as React.RefObject<HTMLElement>} // To suppress the warning about the ref in strict mode
