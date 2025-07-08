@@ -198,7 +198,7 @@ export default function Timeline() {
               <ZoomInIcon />
             </Button>
           </Tooltip>
-          <Tooltip title="Widen timeline scope" placement="bottom-start">
+          <Tooltip title="Widen timeline scope" placement="left-start">
             <Button
               color="primary"
               aria-label="zoom out"
