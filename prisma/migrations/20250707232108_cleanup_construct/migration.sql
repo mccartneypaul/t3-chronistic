@@ -21,6 +21,15 @@ CREATE FUNCTION iso_8601_format(i INTERVAL)
 -- DropForeignKey
 ALTER TABLE "Construct" DROP CONSTRAINT "Construct_mapId_fkey";
 
+-- AlterTable
+ALTER TABLE "Position" ADD COLUMN     "intervalFromBeginning" interval NOT NULL DEFAULT '0 seconds'::interval,
+ALTER COLUMN "id" SET DEFAULT gen_random_uuid(),
+ALTER COLUMN "createdAt" SET DEFAULT now(),
+ALTER COLUMN "updatedAt" SET DEFAULT now();
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Position_mapId_constructId_intervalFromBeginning_key" ON "Position"("mapId", "constructId", "intervalFromBeginning");
+
 -- Migrate from storing position data in the Construct table to a new Position table
 INSERT INTO "Position" ("id", "mapId", "constructId", "posX", "posY", "intervalFromBeginning", "createdAt", "updatedAt")
   SELECT gen_random_uuid(), "mapId", "id", "posX", "posY", MAKE_INTERVAL(), now(), now()
@@ -31,14 +40,5 @@ ALTER TABLE "Construct" DROP COLUMN "mapId",
 DROP COLUMN "posX",
 DROP COLUMN "posY";
 
--- AlterTable
-ALTER TABLE "Position" ADD COLUMN     "intervalFromBeginning" interval NOT NULL DEFAULT '0 seconds'::interval,
-ALTER COLUMN "id" SET DEFAULT gen_random_uuid(),
-ALTER COLUMN "createdAt" SET DEFAULT now(),
-ALTER COLUMN "updatedAt" SET DEFAULT now();
-
 -- DropTable
 DROP TABLE "Example";
-
--- CreateIndex
-CREATE UNIQUE INDEX "Position_mapId_constructId_intervalFromBeginning_key" ON "Position"("mapId", "constructId", "intervalFromBeginning");

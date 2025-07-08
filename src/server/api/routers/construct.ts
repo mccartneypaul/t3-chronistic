@@ -30,19 +30,6 @@ export const constructRouter = createTRPCRouter({
     });
   }),
 
-  getByUser: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.map.findMany({
-      where: {
-        world: {
-          userId: ctx.session.user.id,
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
-  }),
-
   createConstruct: protectedProcedure
     .input(
       zObject({

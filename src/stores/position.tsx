@@ -19,13 +19,15 @@ export interface ApiPosition extends BasePosition {
   intervalFromBeginning: string;
 }
 
-export function mapFromApi(apiPosition: ApiPosition): StorePosition {
+export function mapFromApi(
+  apiPosition: ApiPosition | ApiPosition[],
+): StorePosition {
   // For some reason, the API returns an array of positions, so we take the first one.
   let myPosition: ApiPosition;
   if (Array.isArray(apiPosition) && apiPosition.length > 0) {
-    myPosition = apiPosition[0];
+    myPosition = apiPosition[0] as ApiPosition;
   } else {
-    myPosition = apiPosition;
+    myPosition = apiPosition as ApiPosition;
   }
   return {
     ...myPosition,

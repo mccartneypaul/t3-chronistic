@@ -32,7 +32,7 @@ export const createPositionStore = (initState?: Partial<PositionState>) => {
       ...initState,
       setPositions: (newPositions: StorePosition[]) =>
         set(() => ({
-          positions: newPositions.filter((position) => position != undefined),
+          positions: newPositions,
         })),
       setPosition: (id: string, newPosition: Partial<StorePosition>) =>
         set((state) => ({

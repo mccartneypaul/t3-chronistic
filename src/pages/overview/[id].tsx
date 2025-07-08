@@ -25,10 +25,12 @@ export default function Overview() {
   }));
   const setActiveMap = useMapContext((state) => state.setActiveMap);
   const activeMapId = useMapContext((state) => state.activeMapId);
-  if (!activeMapId || activeMapId !== mapId) {
-    setActiveMap(mapId);
-  }
 
+  useEffect(() => {
+    if (!activeMapId || activeMapId !== mapId) {
+      setActiveMap(mapId);
+    }
+  }, [activeMapId, mapId, setActiveMap]);
   useEffect(() => {
     const mappedConstructs =
       constructData?.map((construct) => mapConstruct(construct)) ?? [];

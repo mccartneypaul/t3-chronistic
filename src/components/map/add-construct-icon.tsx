@@ -15,6 +15,8 @@ export function AddConstructIcon() {
   );
   const activeMapId = useConstructContext((state) => state.activeMapId);
 
+  const NEW_CONSTRUCT_OFFSET = 15;
+
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { clientX, clientY } = event;
 
@@ -22,8 +24,8 @@ export function AddConstructIcon() {
       name: "New Construct",
       description: "New Construct Description",
       mapId: activeMapId,
-      posX: clientX + 15,
-      posY: clientY + 15,
+      posX: clientX + NEW_CONSTRUCT_OFFSET,
+      posY: clientY + NEW_CONSTRUCT_OFFSET,
     };
     console.log(newConstruct);
 
