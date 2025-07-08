@@ -23,6 +23,7 @@ import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlertDialog from "@chronistic/components/alert-dialog";
+import { usePositionContext } from "@chronistic/providers/position-store-provider";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -40,6 +41,9 @@ export default function ConstructOverview(props: ModalOpenProps) {
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
   const setConstruct = useConstructContext((state) => state.setConstruct);
   const removeConstruct = useConstructContext((state) => state.removeConstruct);
+  const removePositionsForConstruct = usePositionContext(
+    (state) => state.removePositionsForConstruct,
+  );
 
   // Initialize temp values with active construct values
   useEffect(() => {
@@ -54,6 +58,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
       deleteConstruct
         .mutateAsync(activeConstruct.id)
         .then(() => {
+          removePositionsForConstruct(activeConstruct.id);
           removeConstruct(activeConstruct.id);
         })
         .catch((error) => {

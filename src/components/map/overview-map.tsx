@@ -4,13 +4,17 @@ import ConstructOverview from "@chronistic/components/construct/construct-overvi
 import React, { Suspense, useEffect } from "react";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { ActionPallette } from "@chronistic/components/map/action-palette";
-import { translatePositionForView } from "@chronistic/models/Position";
+import {
+  translatePositionForTimeline,
+  translatePositionForView,
+} from "@chronistic/models/Position";
 import { initBoundingBox } from "@chronistic/models/BoundingBox";
 import Draggable, {
   type DraggableData,
   type DraggableEvent,
 } from "react-draggable";
 import { api } from "@chronistic/utils/api";
+import { usePositionContext } from "@chronistic/providers/position-store-provider";
 
 export interface OverviewMapProps {
   mapUrl: string;
@@ -29,10 +33,21 @@ export default function OverviewMap(props: OverviewMapProps) {
   const [boundingBox, setBoundingBox] = React.useState(initBoundingBox);
   const storeConstructs = useConstructContext((state) => state.constructs);
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
+  const timelinePosition = usePositionContext(
+    (state) => state.timelinePosition,
+  );
+  const allPositions = usePositionContext((state) => state.positions);
   const translatedConstructs = useConstructContext((state) =>
     state.constructs.map((construct) => ({
       ...construct,
-      ...translatePositionForView(boundingBox, viewTransformation, construct),
+      ...translatePositionForView(
+        boundingBox,
+        viewTransformation,
+        translatePositionForTimeline(
+          timelinePosition,
+          allPositions.filter((p) => p.constructId === construct.id),
+        ),
+      ),
     })),
   );
 
@@ -57,13 +72,37 @@ export default function OverviewMap(props: OverviewMapProps) {
     isDraggingRef.current = false;
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -10 : 10;
+    setViewTransformation((prev) => {
+      if (prev.scale + delta >= 500) {
+        return {
+          ...prev,
+          scale: 500,
+        };
+      } else if (prev.scale + delta <= 100) {
+        return {
+          ...prev,
+          scale: 100,
+        };
+      } else {
+        return {
+          ...prev,
+          scale: prev.scale + delta,
+        };
+      }
+    });
+  };
+
   return (
     <>
       <Suspense fallback={<p>Loading...</p>}>
         <div className="overflow-hidden">
           <div
-            className="relative aspect-auto h-[37vw] overflow-hidden"
+            className="relative aspect-auto h-[42vw] overflow-hidden"
             style={{ transform: `scale(${viewTransformation.scale / 100})` }}
+            onWheel={handleWheel}
           >
             <Draggable
               nodeRef={nodeRef as React.RefObject<HTMLElement>} // To suppress the warning about the ref in strict mode
@@ -106,6 +145,7 @@ export default function OverviewMap(props: OverviewMapProps) {
             .filter(
               (construct) =>
                 construct !== undefined &&
+                // TODO: don't show the construct if the first position is after the current timeline position
                 construct.posX >= boundingBox.left &&
                 construct.posX <= boundingBox.right &&
                 construct.posY >= boundingBox.top &&
