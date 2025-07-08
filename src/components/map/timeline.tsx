@@ -1,8 +1,6 @@
 import * as React from "react";
 import Slider from "@mui/material/Slider";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
-import duration, { Duration } from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import pluralize from "pluralize";
 
@@ -11,9 +9,6 @@ function valuetext(value: number) {
 }
 
 export default function Timeline() {
-  dayjs.extend(duration);
-  dayjs.extend(relativeTime);
-
   const defaultMaxDuration = dayjs.duration(1, "weeks");
   const markUnits = "days";
   const majorTickLabel = (value: number) => {
@@ -59,7 +54,6 @@ export default function Timeline() {
   const handleChange = (event: Event, newValue: number) => {
     setTempValue(newValue as number);
     setTimelinePosition(dayjs.duration(newValue, "seconds"));
-    console.log("Slider value changed:", newValue);
   };
 
   const formatValueLabel = (value: number) => {

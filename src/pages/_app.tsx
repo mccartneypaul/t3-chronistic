@@ -8,6 +8,12 @@ import "@chronistic/styles/globals.css";
 import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
 import { MapStoreProvider } from "@chronistic/providers/map-store-provider";
 import { PositionStoreProvider } from "@chronistic/providers/position-store-provider";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from "dayjs";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
