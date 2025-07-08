@@ -7,7 +7,7 @@ import { api } from "@chronistic/utils/api";
 import { useMapContext } from "@chronistic/providers/map-store-provider";
 import { mapFromApi } from "@chronistic/stores/map";
 
-const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_IMAGE_COUNT = 3;
 
