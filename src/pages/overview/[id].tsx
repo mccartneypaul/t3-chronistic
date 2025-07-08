@@ -8,13 +8,11 @@ import OverviewMap from "@chronistic/components/map/overview-map";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
+import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 export default function Overview() {
   const router = useRouter();
   const mapId = typeof router.query.id === "string" ? router.query.id : "";
-  // const mapData = {
-  //   filePath: "/images/maps/overview.png",
-  // };
   const { data: mapData } = api.map.getById.useQuery(mapId);
   const { data: constructData } = api.construct.getByMap.useQuery(mapId);
   const { data: positionData } = api.position.getByMap.useQuery(mapId);
@@ -25,6 +23,11 @@ export default function Overview() {
   const { setPositions } = usePositionContext((state) => ({
     setPositions: state.setPositions,
   }));
+  const setActiveMap = useMapContext((state) => state.setActiveMap);
+  const activeMapId = useMapContext((state) => state.activeMapId);
+  if (!activeMapId || activeMapId !== mapId) {
+    setActiveMap(mapId);
+  }
 
   useEffect(() => {
     const mappedConstructs =

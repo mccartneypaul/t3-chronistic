@@ -21,7 +21,24 @@ export const constructRouter = createTRPCRouter({
   getByMap: protectedProcedure.input(zString()).query(({ ctx, input }) => {
     return ctx.prisma.construct.findMany({
       where: {
-        mapId: input,
+        positions: {
+          some: {
+            mapId: input,
+          },
+        },
+      },
+    });
+  }),
+
+  getByUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.map.findMany({
+      where: {
+        world: {
+          userId: ctx.session.user.id,
+        },
+      },
+      orderBy: {
+        name: "asc",
       },
     });
   }),
@@ -32,9 +49,6 @@ export const constructRouter = createTRPCRouter({
         data: zObject({
           name: zString(),
           description: zString(),
-          mapId: zString(),
-          posX: zNumber(),
-          posY: zNumber(),
         }),
       }),
     )
@@ -47,6 +61,11 @@ export const constructRouter = createTRPCRouter({
   deleteConstruct: protectedProcedure
     .input(zString())
     .mutation(async ({ ctx, input }) => {
+      const positions = await ctx.prisma.position.deleteMany({
+        where: {
+          constructId: input,
+        },
+      });
       const construct = await ctx.prisma.construct.delete({
         where: {
           id: input,
@@ -81,22 +100,6 @@ export const constructRouter = createTRPCRouter({
       const construct = await ctx.prisma.construct.update({
         where: { id: input.id },
         data: { name: input.name },
-      });
-      return construct;
-    }),
-
-  patchPosition: protectedProcedure
-    .input(
-      zObject({
-        id: zString(),
-        posX: zNumber(),
-        posY: zNumber(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const construct = await ctx.prisma.construct.update({
-        where: { id: input.id },
-        data: { posX: input.posX, posY: input.posY },
       });
       return construct;
     }),

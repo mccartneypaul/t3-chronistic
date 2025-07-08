@@ -25,6 +25,8 @@ export default function MapIcon(props: MapIconProps) {
   const deleteMapImage = api.s3.deleteByKey.useMutation();
   const removeMap = useMapContext((state) => state.removeMap);
 
+  const setActiveMap = useMapContext((state) => state.setActiveMap);
+
   const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // TODO: Implement confirmation dialog before deletion
     deleteMapImage.mutateAsync(props.filePath).catch((error) => {
@@ -46,6 +48,7 @@ export default function MapIcon(props: MapIconProps) {
     <Card key={props.id}>
       <CardActionArea
         href={`/overview/${props.id}`}
+        onClick={() => setActiveMap(props.id)}
         sx={{
           "&[data-active]": {
             backgroundColor: "action.selected",

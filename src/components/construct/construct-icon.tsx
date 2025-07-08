@@ -2,20 +2,23 @@ import Draggable, {
   type DraggableData,
   type DraggableEvent,
 } from "react-draggable";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import AdbIcon from "@mui/icons-material/Adb";
 import { IconButton } from "@mui/material";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
-import { mapFromApi } from "@chronistic/stores/construct";
+import { mapFromApi } from "@chronistic/stores/position";
 import {
   translatePositionForStore,
+  translatePositionForTimeline,
   translatePositionForView,
 } from "@chronistic/models/Position";
 import type { BoundingBox } from "@chronistic/models/BoundingBox";
 import type { ViewTransformation } from "@chronistic/models/ViewTransformation";
 import type { Position } from "@chronistic/models/Position";
+import { usePositionContext } from "@chronistic/providers/position-store-provider";
+import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 interface ConstructIconProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -39,35 +42,66 @@ function ConstructIcon({
   const setActiveConstruct = useConstructContext(
     (state) => state.setActiveConstruct,
   );
-  const setConstruct = useConstructContext((state) => state.setConstruct);
-  const mutatePostition = api.construct.patchPosition.useMutation();
+  const upsertPosition = api.position.upsertPosition.useMutation();
+  const upsertStorePosition = usePositionContext(
+    (state) => state.upsertPosition,
+  );
+  const timelinePosition = usePositionContext(
+    (state) => state.timelinePosition,
+  );
+  const allPositions = usePositionContext((state) => state.positions);
+  const constructPositions = useMemo(
+    () => allPositions.filter((p) => p.constructId === constructId),
+    [allPositions, constructId],
+  );
+  const activeMapId = useMapContext((state) => state.activeMapId);
 
   // Update the temp position whenever construct or view transformation changes
   useEffect(() => {
-    if (thisConstruct) {
-      const pos = translatePositionForView(
-        boundingBox,
-        viewTransformation,
-        thisConstruct,
-      );
-      setTempPosition(validatePositionInBoundingBox(pos));
+    if (!thisConstruct) {
+      return;
     }
-  }, [thisConstruct, boundingBox, viewTransformation]);
 
-  // Ensure the position is within the bounding box for the view
-  function validatePositionInBoundingBox(position: Position) {
-    if (position.posX < boundingBox.left) {
-      position.posX = boundingBox.left;
-    } else if (position.posX > boundingBox.right) {
-      position.posX = boundingBox.right;
+    // Ensure the position is within the bounding box for the view
+    // So that we only save valid positions
+    function validatePositionInBoundingBox(position: Position) {
+      if (position.posX < boundingBox.left) {
+        position.posX = boundingBox.left;
+      } else if (position.posX > boundingBox.right) {
+        position.posX = boundingBox.right;
+      }
+      if (position.posY < boundingBox.top) {
+        position.posY = boundingBox.top;
+      } else if (position.posY > boundingBox.bottom) {
+        position.posY = boundingBox.bottom;
+      }
+      return position;
     }
-    if (position.posY < boundingBox.top) {
-      position.posY = boundingBox.top;
-    } else if (position.posY > boundingBox.bottom) {
-      position.posY = boundingBox.bottom;
+
+    const timePos = translatePositionForTimeline(
+      timelinePosition,
+      constructPositions,
+    );
+    // console.log("Timeline position:", timelinePosition);
+    // console.log("Construct positions:", constructPositions);
+    // console.log("timePos:", timePos);
+    // If there is no position for the current timeline
+    if (!timePos) {
+      return;
     }
-    return position;
-  }
+    const pos = translatePositionForView(
+      boundingBox,
+      viewTransformation,
+      timePos,
+    );
+    setTempPosition(validatePositionInBoundingBox(pos));
+  }, [
+    thisConstruct,
+    boundingBox,
+    viewTransformation,
+    constructPositions,
+    timelinePosition,
+  ]);
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     isDraggingRef.current = true;
@@ -85,21 +119,41 @@ function ConstructIcon({
     isDraggingRef.current = false;
 
     async function asyncMutate() {
-      const storePosition = translatePositionForStore(
-        boundingBox,
-        viewTransformation,
-        tempPosition,
-      );
-      return await mutatePostition.mutateAsync({
-        id: constructId,
-        ...storePosition,
-      });
+      if (!thisConstruct) {
+        console.error(
+          "Construct not found for construct icon with ID:",
+          constructId,
+        );
+        return;
+      }
+      if (!activeMapId) {
+        console.error(
+          "Active map ID is not set when trying to upsert position for construct:",
+          constructId,
+        );
+        return;
+      }
+      const storePosition = {
+        data: {
+          mapId: activeMapId,
+          constructId: constructId,
+          intervalFromBeginning: timelinePosition.toISOString(),
+          ...translatePositionForStore(
+            boundingBox,
+            viewTransformation,
+            tempPosition,
+          ),
+        },
+      };
+      console.log("Store position to upsert:", storePosition);
+      return await upsertPosition.mutateAsync(storePosition);
     }
 
     asyncMutate()
       .then((r) => {
         if (r) {
-          setConstruct(constructId, mapFromApi(r));
+          console.log("Position upserted:", r);
+          upsertStorePosition(mapFromApi(r));
         }
       })
       .catch(console.error);

@@ -4,9 +4,6 @@ export interface StoreConstruct {
   id: string;
   name: string;
   description: string;
-  mapId: string;
-  posX: number;
-  posY: number;
   createdAt: Date;
   updatedAt: Date;
 }

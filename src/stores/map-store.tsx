@@ -9,6 +9,8 @@ export interface MapState extends MapProps {
   setMaps: (maps: Partial<StoreMap[]>) => void;
   addMap: (map: StoreMap) => void;
   removeMap: (id: string) => void;
+  activeMapId?: string;
+  setActiveMap: (mapId: string) => void;
 }
 
 export type MapStore = ReturnType<typeof createMapStore>;
@@ -33,6 +35,10 @@ export const createMapStore = (initState?: Partial<MapState>) => {
     removeMap: (id: string) =>
       set((state) => ({
         maps: state.maps.filter((map) => map.id !== id),
+      })),
+    setActiveMap: (mapId: string) =>
+      set((state) => ({
+        activeMapId: mapId,
       })),
   }));
 };

@@ -1,4 +1,4 @@
-import duration, { Duration } from "dayjs/plugin/duration";
+import { Duration } from "dayjs/plugin/duration";
 import dayjs from "dayjs";
 
 export interface BasePosition {
@@ -20,15 +20,20 @@ export interface ApiPosition extends BasePosition {
 }
 
 export function mapFromApi(apiPosition: ApiPosition): StorePosition {
-  dayjs.extend(duration);
+  // For some reason, the API returns an array of positions, so we take the first one.
+  let myPosition: ApiPosition;
+  if (Array.isArray(apiPosition) && apiPosition.length > 0) {
+    myPosition = apiPosition[0];
+  } else {
+    myPosition = apiPosition;
+  }
   return {
-    ...apiPosition,
-    intervalFromBeginning: dayjs.duration(apiPosition.intervalFromBeginning),
+    ...myPosition,
+    intervalFromBeginning: dayjs.duration(myPosition.intervalFromBeginning),
   };
 }
 
 export function mapToApi(storePosition: StorePosition): ApiPosition {
-  dayjs.extend(duration);
   return {
     ...storePosition,
     intervalFromBeginning: storePosition.intervalFromBeginning.toISOString(),
