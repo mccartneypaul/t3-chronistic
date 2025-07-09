@@ -3,7 +3,7 @@ import Slider from "@mui/material/Slider";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import dayjs from "dayjs";
 import pluralize from "pluralize";
-import { Button, IconButton, Paper, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 
@@ -94,24 +94,7 @@ export default function Timeline() {
     10 * timelineBaseUnits.increment,
     timelineBaseUnits.unit,
   );
-  const maxTime = usePositionContext((state) => {
-    if (state.positions.length === 0) {
-      return defaultMaxDuration.asSeconds();
-    } else {
-      const maxInterval = state.positions.reduce(function (prev, current) {
-        return prev &&
-          prev.intervalFromBeginning > current.intervalFromBeginning
-          ? prev
-          : current;
-      });
-      return maxInterval.intervalFromBeginning > defaultMaxDuration
-        ? maxInterval.intervalFromBeginning.asSeconds()
-        : defaultMaxDuration.asSeconds();
-    }
-  });
-  const timelinePosition = usePositionContext((state) =>
-    state.timelinePosition.asSeconds(),
-  );
+  const maxTime = defaultMaxDuration.asSeconds();
   const setTimelinePosition = usePositionContext(
     (state) => state.setTimelinePosition,
   );
