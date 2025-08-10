@@ -150,8 +150,7 @@ export default function PositionDataModal() {
         scroll="paper"
         onClose={handleClose}
         aria-labelledby="child-modal-title"
-        className="max-w-500 min-w-250"
-        fullWidth={true}
+        className="max-w-400 min-w-150"
         maxWidth="md"
       >
         <Suspense fallback={<p>Loading...</p>}>
