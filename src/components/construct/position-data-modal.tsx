@@ -43,8 +43,6 @@ export default function PositionDataModal() {
   const updatePosition = api.position.updatePosition.useMutation();
   const deletePosition = api.position.deletePosition.useMutation();
 
-  // const [tempDescription, setTempDescription] = useState("");
-  // const [tempName, setTempName] = useState("");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
