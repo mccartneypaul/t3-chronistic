@@ -19,6 +19,7 @@ import type { ViewTransformation } from "@chronistic/models/ViewTransformation";
 import type { Position } from "@chronistic/models/Position";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import { useMapContext } from "@chronistic/providers/map-store-provider";
+import Tooltip from "@mui/material/Tooltip";
 
 interface ConstructIconProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -167,17 +168,19 @@ function ConstructIcon({
       position={{ y: tempPosition.posY, x: tempPosition.posX }}
       bounds={boundingBox}
     >
-      <div ref={nodeRef} className="absolute">
-        <IconButton
-          color="secondary"
-          onDoubleClick={() => {
-            setActiveConstruct(constructId);
-            setOpen(true);
-          }}
-        >
-          <AdbIcon />
-        </IconButton>
-      </div>
+      <Tooltip title={thisConstruct?.name ?? "Unknown Construct"}>
+        <div ref={nodeRef} className="absolute">
+          <IconButton
+            color="secondary"
+            onDoubleClick={() => {
+              setActiveConstruct(constructId);
+              setOpen(true);
+            }}
+          >
+            <AdbIcon />
+          </IconButton>
+        </div>
+      </Tooltip>
     </Draggable>
   );
 }
