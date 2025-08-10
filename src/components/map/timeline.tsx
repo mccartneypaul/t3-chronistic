@@ -7,6 +7,10 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 export interface TimelineBaseUnits {
   increment: number;
@@ -91,8 +95,12 @@ export default function Timeline() {
       increment: 1,
       unit: "days",
     });
+  const [timelineOffset, setTimelineOffset] = React.useState(0);
+  const minTime = dayjs
+    .duration(timelineOffset, timelineBaseUnits.unit)
+    .asSeconds();
   const defaultMaxDuration = dayjs.duration(
-    10 * timelineBaseUnits.increment,
+    timelineOffset + 10 * timelineBaseUnits.increment,
     timelineBaseUnits.unit,
   );
   const maxTime = defaultMaxDuration.asSeconds();
@@ -113,9 +121,12 @@ export default function Timeline() {
     },
     (_, index) => {
       const value = dayjs
-        .duration(timelineBaseUnits.increment * index, timelineBaseUnits.unit)
+        .duration(
+          timelineOffset + timelineBaseUnits.increment * index,
+          timelineBaseUnits.unit,
+        )
         .asSeconds();
-      const unitNumber = timelineBaseUnits.increment * index;
+      const unitNumber = timelineOffset + timelineBaseUnits.increment * index;
       return {
         value: value,
         label: majorTickLabel(unitNumber, timelineBaseUnits.unit),
@@ -144,6 +155,22 @@ export default function Timeline() {
     setTimelineBaseUnits((prev) => updateTimelineBaseUnits(1, prev));
   };
 
+  const offsetTimeline = (amount: number) => {
+    // Offset the timeline by a certain amount making sure it doesn't go below 0
+    setTimelineOffset((prev) => {
+      let newOffset = prev + amount;
+      if (newOffset < 0) {
+        newOffset = 0;
+      }
+      // Update the timeline position to reflect the new offset
+      handleChange(
+        {} as Event,
+        dayjs.duration(newOffset, timelineBaseUnits.unit).asSeconds(),
+      );
+      return newOffset;
+    });
+  };
+
   return (
     <div className="box-border flex w-full flex-col bg-blue-400">
       <div className="mb-0 box-border flex w-full justify-center">
@@ -156,6 +183,7 @@ export default function Timeline() {
             onChange={handleChange}
             step={10}
             marks={marks}
+            min={minTime}
             max={maxTime}
             valueLabelDisplay="on"
             valueLabelFormat={formatValueLabel}
@@ -169,6 +197,63 @@ export default function Timeline() {
             }}
           />
         </div>
+        {/* ------------------ Timeline controls --------------- */}
+        {/* --------Buttons for offsetting the timeline -------- */}
+        <div className="grid grid-rows-2">
+          <div className="flex justify-center">
+            <Tooltip title="Offset by -1" placement="top-start">
+              <Button
+                color="primary"
+                aria-label="zoom in"
+                size="small"
+                variant="outlined"
+                onClick={() => offsetTimeline(-1)}
+                sx={{ color: "white" }}
+              >
+                <KeyboardArrowLeftIcon />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Offset by 1" placement="top-start">
+              <Button
+                color="primary"
+                aria-label="zoom in"
+                size="small"
+                variant="outlined"
+                onClick={() => offsetTimeline(1)}
+                sx={{ color: "white" }}
+              >
+                <KeyboardArrowRightIcon />
+              </Button>
+            </Tooltip>
+          </div>
+          <div className="flex justify-center">
+            <Tooltip title="Offset by -5" placement="left">
+              <Button
+                color="primary"
+                aria-label="zoom in"
+                size="small"
+                variant="outlined"
+                onClick={() => offsetTimeline(-5)}
+                sx={{ color: "white" }}
+              >
+                <KeyboardDoubleArrowLeftIcon />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Offset by 5" placement="right">
+              <Button
+                color="primary"
+                aria-label="zoom in"
+                size="small"
+                variant="outlined"
+                onClick={() => offsetTimeline(5)}
+                sx={{ color: "white" }}
+              >
+                <KeyboardDoubleArrowRightIcon />
+              </Button>
+            </Tooltip>
+          </div>
+        </div>
+        {/* ------------- Zoom controls for the timeline ------------- */}
         <div className="grid grid-rows-2">
           <Tooltip title="Narrow timeline scope" placement="top-start">
             <Button
