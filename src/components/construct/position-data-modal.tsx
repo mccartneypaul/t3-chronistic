@@ -7,14 +7,35 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridRowId,
+  GridRowModel,
+} from "@mui/x-data-grid";
 import { GridColDef } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { api } from "@chronistic/utils/api";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
+import { useConstructContext } from "@chronistic/providers/construct-store-provider";
+import dayjs from "dayjs";
+import { mapToApi, StorePosition } from "@chronistic/stores/position";
 
 export default function PositionDataModal() {
+  const activeConstruct = useConstructContext((state) => state.activeConstruct);
+  const allPositions = usePositionContext((state) => state.positions);
+  const constructPositions = React.useMemo(
+    () => allPositions.filter((p) => p.constructId === activeConstruct?.id),
+    [allPositions, activeConstruct],
+  );
+  const updateStorePosition = usePositionContext(
+    (state) => state.updatePosition,
+  );
+  const removePosition = usePositionContext((state) => state.removePosition);
+  const updatePosition = api.position.updatePosition.useMutation();
+  const deletePosition = api.position.deletePosition.useMutation();
+
   // const [tempDescription, setTempDescription] = useState("");
   // const [tempName, setTempName] = useState("");
   const [open, setOpen] = React.useState(false);
@@ -25,48 +46,67 @@ export default function PositionDataModal() {
     setOpen(false);
   };
 
-  const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: "id", headerName: "ID", width: 90 },
+  const handleDeleteClick = (id: GridRowId) => () => {
+    deletePosition.mutate(id as string);
+    removePosition(id as string);
+  };
+
+  const processRowUpdate = (newRow: GridRowModel<StorePosition>) => {
+    const updatedRow = { ...newRow, isNew: false };
+    const apiRow = { data: mapToApi(updatedRow) };
+    updatePosition.mutate(apiRow);
+    updateStorePosition(updatedRow);
+    return updatedRow;
+  };
+
+  const columns: GridColDef<(typeof constructPositions)[number]>[] = [
     {
-      field: "firstName",
-      headerName: "First name",
+      field: "posX",
+      headerName: "Position X",
+      type: "number",
       width: 150,
       editable: true,
     },
     {
-      field: "lastName",
-      headerName: "Last name",
+      field: "posY",
+      headerName: "Position Y",
+      type: "number",
       width: 150,
       editable: true,
     },
     {
-      field: "age",
-      headerName: "Age",
+      field: "intervalFromBeginning",
+      headerName: "Interval",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.asSeconds();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: dayjs.duration(value, "seconds"),
+        };
+      },
       type: "number",
       width: 110,
       editable: true,
     },
     {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
     },
-  ];
-
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
   ];
 
   return (
@@ -94,14 +134,15 @@ export default function PositionDataModal() {
               variant="h5"
               component="h2"
             >
-              Construct Life
+              {activeConstruct?.name ?? ""} - Position Data
             </Typography>
           </DialogTitle>
           <DialogContent dividers={true}>
             <Box sx={{ height: 400, width: "100%" }}>
               <DataGrid
-                rows={rows}
+                rows={constructPositions}
                 columns={columns}
+                processRowUpdate={processRowUpdate}
                 initialState={{
                   pagination: {
                     paginationModel: {

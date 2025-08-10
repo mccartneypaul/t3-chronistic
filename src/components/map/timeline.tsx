@@ -3,7 +3,8 @@ import Slider from "@mui/material/Slider";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import dayjs from "dayjs";
 import pluralize from "pluralize";
-import { Button, Tooltip } from "@mui/material";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 

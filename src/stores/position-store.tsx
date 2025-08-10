@@ -15,6 +15,7 @@ export interface PositionState extends PositionProps {
   addPosition: (position: StorePosition) => void;
   removePosition: (id: string) => void;
   removePositionsForConstruct: (constructId: string) => void;
+  updatePosition: (position: StorePosition) => void;
   upsertPosition: (position: StorePosition) => void;
   setTimelinePosition: (position: Duration) => void;
 }
@@ -43,6 +44,14 @@ export const createPositionStore = (initState?: Partial<PositionState>) => {
       addPosition: (newPosition: StorePosition) =>
         set((state) => ({
           positions: [...state.positions, newPosition],
+        })),
+      updatePosition: (updatedPosition: StorePosition) =>
+        set((state) => ({
+          positions: state.positions.map((position) =>
+            position.id === updatedPosition.id
+              ? { ...position, ...updatedPosition }
+              : position,
+          ),
         })),
       upsertPosition: (newPosition: StorePosition) =>
         set((state) => {
