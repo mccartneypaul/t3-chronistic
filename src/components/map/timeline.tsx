@@ -95,7 +95,7 @@ export default function Timeline() {
       increment: 1,
       unit: "days",
     });
-  const [timelineOffset, setTimelineOffset] = React.useState(4);
+  const [timelineOffset, setTimelineOffset] = React.useState(0);
   const minTime = dayjs
     .duration(timelineOffset, timelineBaseUnits.unit)
     .asSeconds();
