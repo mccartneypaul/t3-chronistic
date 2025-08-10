@@ -129,6 +129,7 @@ export default function PositionDataModal() {
       getActions: ({ id }) => {
         return [
           <GridActionsCellItem
+            key={`delete-${id}`}
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
@@ -181,7 +182,6 @@ export default function PositionDataModal() {
                   },
                 }}
                 pageSizeOptions={[5]}
-                checkboxSelection
                 disableRowSelectionOnClick
               />
             </Box>
