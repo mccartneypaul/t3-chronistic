@@ -51,6 +51,21 @@ export default function OverviewMap(props: OverviewMapProps) {
     })),
   );
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const newBoundingBox = nodeRef.current?.getBoundingClientRect();
+  //     console.log("Window resized", newBoundingBox);
+
+  //     if (newBoundingBox) {
+  //       setBoundingBox(newBoundingBox);
+  //     }
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+
   useEffect(() => {
     console.log("OverviewMap re-rendered with constructs:", storeConstructs);
   }, [storeConstructs]);

@@ -1,11 +1,9 @@
 import { api } from "@chronistic/utils/api";
-import {
-  CardActionArea,
-  CardActions,
-  CardMedia,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardActions from "@mui/material/CardActions";
+import CardMedia from "@mui/material/CardMedia";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";

@@ -1,5 +1,5 @@
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
-import { Fab } from "@mui/material";
+import Fab from "@mui/material/Fab";
 import type { ViewTransformationProps } from "./action-palette";
 
 export function ZoomOut(props: ViewTransformationProps) {

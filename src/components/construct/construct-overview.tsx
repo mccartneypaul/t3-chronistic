@@ -7,17 +7,15 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  TextField,
-  Typography,
-  Button,
-  Dialog,
-  IconButton,
-} from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/construct";
@@ -231,7 +229,6 @@ export default function ConstructOverview(props: ModalOpenProps) {
               Picture File Notes
             </Button>
             <PositionDataModal />
-
           </DialogActions>
         </Suspense>
       </Dialog>

@@ -1,5 +1,5 @@
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import { Fab } from "@mui/material";
+import Fab from "@mui/material/Fab";
 import type { ViewTransformationProps } from "./action-palette";
 
 export function ZoomIn(props: ViewTransformationProps) {

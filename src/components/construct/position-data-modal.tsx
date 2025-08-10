@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 "use client";
 import * as React from "react";
 import { Suspense } from "react";
@@ -7,12 +8,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridRowId,
-  GridRowModel,
-} from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridRowId } from "@mui/x-data-grid";
+import { GridRowModel } from "@mui/x-data-grid";
 import { GridColDef } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { api } from "@chronistic/utils/api";
