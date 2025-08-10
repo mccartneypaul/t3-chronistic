@@ -24,6 +24,7 @@ import { mapFromApi } from "@chronistic/stores/construct";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlertDialog from "@chronistic/components/alert-dialog";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
+import PositionDataModal from "./position-data-modal";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -151,7 +152,7 @@ export default function ConstructOverview(props: ModalOpenProps) {
                   size="small"
                   value={tempName}
                   sx={{ marginLeft: "5", marginTop: "-5" }}
-                  inputProps={{ style: { fontSize: "1.5rem" } }}
+                  slotProps={{ input: { style: { fontSize: "1.5rem" } } }}
                   onChange={({ target }) => setTempName(target.value)}
                 />
               </div>
@@ -229,9 +230,8 @@ export default function ConstructOverview(props: ModalOpenProps) {
             <Button variant="contained" color="primary">
               Picture File Notes
             </Button>
-            <Button variant="contained" color="primary">
-              Location Data
-            </Button>
+            <PositionDataModal />
+
           </DialogActions>
         </Suspense>
       </Dialog>

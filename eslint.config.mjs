@@ -8,6 +8,14 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.config({
     extends: ["next", "prettier", "next/core-web-vitals"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [{ regex: "^@mui/[^/]+$" }],
+        },
+      ],
+    },
   }),
 ];
 

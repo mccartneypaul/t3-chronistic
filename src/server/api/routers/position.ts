@@ -45,7 +45,33 @@ export const positionRouter = createTRPCRouter({
       RETURNING id, "mapId", "constructId", "posX", "posY", "createdAt", "updatedAt", iso_8601_format("intervalFromBeginning") AS "intervalFromBeginning"
     `;
     }),
-
+  updatePosition: protectedProcedure
+    .input(
+      zObject({
+        data: zObject({
+          id: zString(),
+          mapId: zString(),
+          constructId: zString(),
+          posX: zNumber(),
+          posY: zNumber(),
+          intervalFromBeginning: zIso.duration(),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.$queryRaw<ApiPosition>`
+      UPDATE public."Position"
+      SET
+        "mapId" = ${input.data.mapId},
+        "constructId" = ${input.data.constructId},
+        "posX" = ${input.data.posX},
+        "posY" = ${input.data.posY},
+        "intervalFromBeginning" = ${input.data.intervalFromBeginning}::interval,
+        "updatedAt" = NOW()
+      WHERE id = ${input.data.id}
+      RETURNING id, "mapId", "constructId", "posX", "posY", "createdAt", "updatedAt", iso_8601_format("intervalFromBeginning") AS "intervalFromBeginning"
+    `;
+    }),
   upsertPosition: protectedProcedure
     .input(
       zObject({

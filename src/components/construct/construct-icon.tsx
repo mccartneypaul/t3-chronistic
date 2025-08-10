@@ -5,7 +5,7 @@ import Draggable, {
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import AdbIcon from "@mui/icons-material/Adb";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/position";
