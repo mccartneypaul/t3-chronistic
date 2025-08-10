@@ -20,19 +20,26 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import dayjs from "dayjs";
-import { mapToApi, StorePosition } from "@chronistic/stores/position";
+import {
+  mapToApi,
+  mapFromApi,
+  StorePosition,
+} from "@chronistic/stores/position";
 
 export default function PositionDataModal() {
   const activeConstruct = useConstructContext((state) => state.activeConstruct);
+  const activeMapId = useConstructContext((state) => state.activeMapId);
   const allPositions = usePositionContext((state) => state.positions);
   const constructPositions = React.useMemo(
     () => allPositions.filter((p) => p.constructId === activeConstruct?.id),
     [allPositions, activeConstruct],
   );
+  const addPosition = usePositionContext((state) => state.addPosition);
   const updateStorePosition = usePositionContext(
     (state) => state.updatePosition,
   );
   const removePosition = usePositionContext((state) => state.removePosition);
+  const createPosition = api.position.createPosition.useMutation();
   const updatePosition = api.position.updatePosition.useMutation();
   const deletePosition = api.position.deletePosition.useMutation();
 
@@ -49,6 +56,31 @@ export default function PositionDataModal() {
   const handleDeleteClick = (id: GridRowId) => () => {
     deletePosition.mutate(id as string);
     removePosition(id as string);
+  };
+
+  const addNewPosition = async () => {
+    const maxInterval =
+      constructPositions.length > 0
+        ? Math.max(
+            ...constructPositions.map(
+              (p) => p.intervalFromBeginning.asSeconds() + 1,
+            ),
+          )
+        : 0;
+
+    const newPosition = {
+      constructId: activeConstruct?.id ?? "",
+      mapId: activeMapId ?? "",
+      posX: 0,
+      posY: 0,
+      intervalFromBeginning: dayjs
+        .duration(maxInterval, "seconds")
+        .toISOString(),
+    };
+    const persistedPosition = await createPosition.mutateAsync({
+      data: newPosition,
+    });
+    addPosition(mapFromApi(persistedPosition));
   };
 
   const processRowUpdate = (newRow: GridRowModel<StorePosition>) => {
@@ -156,7 +188,9 @@ export default function PositionDataModal() {
               />
             </Box>
           </DialogContent>
-          <DialogActions className="flex flex-row justify-between pr-3 pb-3 pl-3"></DialogActions>
+          <DialogActions className="flex flex-row justify-between pr-3 pb-3 pl-3">
+            <Button onClick={addNewPosition}>Add Position</Button>
+          </DialogActions>
         </Suspense>
       </Dialog>
     </>
