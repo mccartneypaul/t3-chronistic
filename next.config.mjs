@@ -8,6 +8,7 @@
 const config = {
   output: "standalone",
   reactStrictMode: true,
+  transpilePackages: ["@mui/x-data-grid"], // required for loading virtual node_modules (gets a global css error otherwise)
   // Client side source map
   productionBrowserSourceMaps: true,
   // Server side source map
