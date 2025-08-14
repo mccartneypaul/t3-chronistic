@@ -16,6 +16,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { api } from "@chronistic/utils/api";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
 import dayjs from "dayjs";
@@ -42,6 +43,10 @@ export default function PositionDataModal() {
   const updatePosition = api.position.updatePosition.useMutation();
   const deletePosition = api.position.deletePosition.useMutation();
 
+  const setTimelinePosition = usePositionContext(
+    (state) => state.setTimelinePosition,
+  );
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -53,6 +58,13 @@ export default function PositionDataModal() {
   const handleDeleteClick = (id: GridRowId) => () => {
     deletePosition.mutate(id as string);
     removePosition(id as string);
+  };
+
+  const handleFocusClick = (id: GridRowId) => () => {
+    const position = constructPositions.find((p) => p.id === id);
+    if (position) {
+      setTimelinePosition(position.intervalFromBeginning);
+    }
   };
 
   const addNewPosition = async () => {
@@ -93,30 +105,122 @@ export default function PositionDataModal() {
       field: "posX",
       headerName: "Position X",
       type: "number",
-      width: 150,
+      width: 100,
       editable: true,
     },
     {
       field: "posY",
       headerName: "Position Y",
       type: "number",
-      width: 150,
+      width: 100,
       editable: true,
     },
     {
-      field: "intervalFromBeginning",
-      headerName: "Interval",
+      field: "hours",
+      headerName: "Hours",
       valueGetter: (value, row) => {
-        return row.intervalFromBeginning.asSeconds();
+        return row.intervalFromBeginning.hours();
       },
       valueSetter: (value, row) => {
         return {
           ...row,
-          intervalFromBeginning: dayjs.duration(value, "seconds"),
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.hours(), "hours")
+            .add(value, "hours"),
         };
       },
       type: "number",
-      width: 110,
+      width: 70,
+      editable: true,
+    },
+    {
+      field: "minutes",
+      headerName: "Minutes",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.minutes();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.minutes(), "minutes")
+            .add(value, "minutes"),
+        };
+      },
+      type: "number",
+      width: 70,
+      editable: true,
+    },
+    {
+      field: "seconds",
+      headerName: "Seconds",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.seconds();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.seconds(), "seconds")
+            .add(value, "seconds"),
+        };
+      },
+      type: "number",
+      width: 80,
+      editable: true,
+    },
+    {
+      field: "years",
+      headerName: "Years",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.years();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.years(), "years")
+            .add(value, "years"),
+        };
+      },
+      type: "number",
+      width: 70,
+      editable: true,
+    },
+    {
+      field: "months",
+      headerName: "Months",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.months();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.months(), "months")
+            .add(value, "months"),
+        };
+      },
+      type: "number",
+      width: 70,
+      editable: true,
+    },
+    {
+      field: "days",
+      headerName: "Days",
+      valueGetter: (value, row) => {
+        return row.intervalFromBeginning.days();
+      },
+      valueSetter: (value, row) => {
+        return {
+          ...row,
+          intervalFromBeginning: row.intervalFromBeginning
+            .subtract(row.intervalFromBeginning.days(), "days")
+            .add(value, "days"),
+        };
+      },
+      type: "number",
+      width: 70,
       editable: true,
     },
     {
@@ -125,13 +229,20 @@ export default function PositionDataModal() {
       headerName: "Actions",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ id }) => {
+      getActions: ({ id, row }) => {
         return [
           <GridActionsCellItem
             key={`delete-${id}`}
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            key={`focus-${id}`}
+            icon={<CenterFocusStrongIcon />}
+            label="Focus Timeline Position"
+            onClick={handleFocusClick(id)}
             color="inherit"
           />,
         ];

@@ -11,6 +11,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import { useEffect } from "react";
 
 export interface TimelineBaseUnits {
   increment: number;
@@ -104,9 +105,42 @@ export default function Timeline() {
     timelineBaseUnits.unit,
   );
   const maxTime = defaultMaxDuration.asSeconds();
+  const timelinePosition = usePositionContext(
+    (state) => state.timelinePosition,
+  );
   const setTimelinePosition = usePositionContext(
     (state) => state.setTimelinePosition,
   );
+
+  useEffect(() => {
+    const timeInSeconds = timelinePosition.asSeconds();
+    const baseUnitIncrementInSeconds = dayjs
+      .duration(timelineBaseUnits.increment, timelineBaseUnits.unit)
+      .asSeconds();
+    if (timeInSeconds < minTime) {
+      const offsetDelta = Math.ceil(
+        Math.abs(minTime - timeInSeconds) / baseUnitIncrementInSeconds,
+      );
+      const newOffset = Math.max(timelineOffset - offsetDelta, 0);
+
+      setTimelineOffset(newOffset);
+    }
+    if (timeInSeconds > maxTime) {
+      const offsetDelta = Math.ceil(
+        Math.max(timeInSeconds - maxTime, 0) / baseUnitIncrementInSeconds,
+      );
+      const newOffset = timelineOffset + offsetDelta;
+      setTimelineOffset(newOffset);
+    }
+    setTempValue(timelinePosition.asSeconds());
+  }, [
+    timelinePosition,
+    minTime,
+    maxTime,
+    timelineBaseUnits.increment,
+    timelineBaseUnits.unit,
+    timelineOffset,
+  ]);
 
   // Generate marks based on the units you'd like
   const marks = Array.from(
