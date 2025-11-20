@@ -5,7 +5,9 @@ import React, { useState } from "react";
 
 import { api } from "@chronistic/utils/api";
 import { useMapContext } from "@chronistic/providers/map-store-provider";
-import { mapFromApi } from "@chronistic/stores/map";
+import { mapFromApi as mapMapFromApi } from "@chronistic/stores/map";
+import { useImageContext } from "@chronistic/providers/image-store-provider";
+import { mapFromApi as mapImageFromApi } from "@chronistic/stores/image";
 
 const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -15,11 +17,32 @@ export interface DropZoneProps {
   worldId: string;
 }
 
+export async function getImageSize(blob: Blob) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = () => {
+      resolve({
+        width: img.width,
+        height: img.height,
+      });
+    };
+
+    img.onerror = (error) => {
+      reject(error);
+    };
+
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
 export default function Dropzone(props: DropZoneProps) {
   const createMap = api.map.createMap.useMutation();
+  const createImage = api.image.createImage.useMutation();
   const uploadImage = api.s3.uploadImage.useMutation();
   const [uploading, setUploading] = useState<boolean>(false);
   const addMap = useMapContext((state) => state.addMap);
+  const addImage = useImageContext((state) => state.addImage);
 
   const typeValidator = (file: File): FileError | null => {
     if (file.size > MAX_FILE_SIZE_BYTES) {
@@ -47,6 +70,15 @@ export default function Dropzone(props: DropZoneProps) {
     try {
       for (const file of acceptedFiles) {
         try {
+          // Get the image's dimensions
+          const { width, height } = (await getImageSize(file)) as {
+            width: number;
+            height: number;
+          };
+          console.log(
+            `Uploaded image dimensions for ${file.name}: ${width}x${height}`,
+          );
+
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
 
@@ -59,16 +91,28 @@ export default function Dropzone(props: DropZoneProps) {
               },
             })
             .then(() => {
-              createMap
+              createImage
                 .mutateAsync({
                   data: {
-                    name: file.name,
-                    worldId: props.worldId,
                     filePath: file.name,
+                    rawWidth: width,
+                    rawHeight: height,
                   },
                 })
-                .then((map) => {
-                  addMap(mapFromApi(map));
+                .then((image) => {
+                  addImage(mapImageFromApi(image));
+                  createMap
+                    .mutateAsync({
+                      data: {
+                        name: file.name,
+                        worldId: props.worldId,
+                        filePath: file.name,
+                        imageId: image.id,
+                      },
+                    })
+                    .then((map) => {
+                      addMap(mapMapFromApi(map));
+                    });
                 });
             })
             .catch((error) => {

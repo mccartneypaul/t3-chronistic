@@ -17,9 +17,9 @@ export default function Overview() {
   const { data: constructData } = api.construct.getByMap.useQuery(mapId);
   const { data: positionData } = api.position.getByMap.useQuery(mapId);
 
-  const { setMapConstructs } = useConstructContext((state) => ({
-    setMapConstructs: state.setMapConstructs,
-  }));
+  // const { setMapConstructs } = useConstructContext((state) => ({
+  //   setMapConstructs: state.setMapConstructs,
+  // }));
   const { setPositions } = usePositionContext((state) => ({
     setPositions: state.setPositions,
   }));
@@ -34,7 +34,7 @@ export default function Overview() {
   useEffect(() => {
     const mappedConstructs =
       constructData?.map((construct) => mapConstruct(construct)) ?? [];
-    setMapConstructs(mapId, mappedConstructs);
+    // setMapConstructs(mapId, mappedConstructs);
   }, [constructData]);
   useEffect(() => {
     const mappedPositions =

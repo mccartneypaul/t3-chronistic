@@ -5,12 +5,13 @@ import React from "react";
 import { api } from "@chronistic/utils/api";
 
 import "@chronistic/styles/globals.css";
-import { ConstructStoreProvider } from "@chronistic/providers/construct-store-provider";
-import { MapStoreProvider } from "@chronistic/providers/map-store-provider";
-import { PositionStoreProvider } from "@chronistic/providers/position-store-provider";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
+import { MainProvider } from "@chronistic/providers/main-provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -29,15 +30,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, []);
 
   return (
-    <PositionStoreProvider>
-      <ConstructStoreProvider>
-        <MapStoreProvider>
-          <SessionProvider session={session}>
-            <Component {...pageProps} />
-          </SessionProvider>
-        </MapStoreProvider>
-      </ConstructStoreProvider>
-    </PositionStoreProvider>
+    <MainProvider>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </QueryClientProvider>
+    </MainProvider>
   );
 };
 

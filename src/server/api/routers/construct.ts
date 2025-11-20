@@ -36,6 +36,7 @@ export const constructRouter = createTRPCRouter({
         data: zObject({
           name: zString(),
           description: zString(),
+          imageId: zString(),
         }),
       }),
     )

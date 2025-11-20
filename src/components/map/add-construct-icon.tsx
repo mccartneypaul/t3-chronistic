@@ -20,10 +20,12 @@ export function AddConstructIcon() {
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { clientX, clientY } = event;
 
+    throw new Error("ImageId is missing here, need to fix");
     const newConstruct = {
       name: "New Construct",
       description: "New Construct Description",
       mapId: activeMapId,
+      imageId: "", // TODO: get an actual imageid
       posX: clientX + NEW_CONSTRUCT_OFFSET,
       posY: clientY + NEW_CONSTRUCT_OFFSET,
     };
