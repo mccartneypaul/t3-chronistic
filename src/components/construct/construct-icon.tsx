@@ -3,10 +3,12 @@ import Draggable, {
   type DraggableEvent,
 } from "react-draggable";
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import Image from "next/image";
 import type { Dispatch, SetStateAction } from "react";
 import AdbIcon from "@mui/icons-material/Adb";
-import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import { useConstructContext } from "@chronistic/providers/construct-store-provider";
+import { useImageContext } from "@chronistic/providers/image-store-provider";
 import { api } from "@chronistic/utils/api";
 import { mapFromApi } from "@chronistic/stores/position";
 import {
@@ -56,6 +58,18 @@ function ConstructIcon({
     [allPositions, constructId],
   );
   const activeMapId = useMapContext((state) => state.activeMapId);
+
+  const storeImages = useImageContext((state) => state.images);
+  const storeImage = useMemo(
+    () => storeImages.filter((img) => img.id === thisConstruct?.imageId)[0],
+    [storeImages, thisConstruct],
+  );
+  const { data: constructImage } = api.s3.getByKey.useQuery(
+    storeImage?.filePath ?? "",
+    {
+      enabled: !!storeImage?.filePath && storeImage.filePath.length > 0,
+    },
+  );
 
   // Update the temp position whenever construct or view transformation changes
   useEffect(() => {
@@ -170,15 +184,35 @@ function ConstructIcon({
     >
       <Tooltip title={thisConstruct?.name ?? "Unknown Construct"}>
         <div ref={nodeRef} className="absolute">
-          <IconButton
+          <Button
             color="secondary"
             onDoubleClick={() => {
               setActiveConstruct(constructId);
               setOpen(true);
             }}
-          >
-            <AdbIcon />
-          </IconButton>
+            className="size-16"
+            component="label"
+            variant="outlined"
+            endIcon={
+              <div>
+                {constructImage && (
+                  <Image
+                    className={`object-contain`}
+                    src={`data:${constructImage?.fileType};base64,${Buffer.from(constructImage?.u8Stream ?? []).toString("base64")}`}
+                    priority
+                    alt=""
+                    quality="100"
+                    draggable={false} // Disable default drag behavior
+                    fill
+                  />
+                )}
+                {!constructImage && <AdbIcon className="text-center" />}
+              </div>
+            }
+            sx={{
+              padding: "1px",
+            }}
+          ></Button>
         </div>
       </Tooltip>
     </Draggable>

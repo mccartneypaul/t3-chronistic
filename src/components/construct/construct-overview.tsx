@@ -23,6 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AlertDialog from "@chronistic/components/alert-dialog";
 import { usePositionContext } from "@chronistic/providers/position-store-provider";
 import PositionDataModal from "./position-data-modal";
+import ConstructSetIcon from "./construct-set-icon";
 
 export interface ModalOpenProps {
   isOpen: boolean;
@@ -134,7 +135,10 @@ export default function ConstructOverview(props: ModalOpenProps) {
             sx={{ paddingBottom: "5px" }}
           >
             <div className="flex flex-row justify-between">
-              <div className="flex flex-row">
+              <div className="flex flex-row items-center">
+                <div className="pr-2">
+                  <ConstructSetIcon constructId={activeConstruct?.id ?? ""} />
+                </div>
                 <div className="mr-2">
                   <Typography
                     id="construct-overview-modal-title"
