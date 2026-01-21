@@ -49,3 +49,7 @@ This directory contains files needed to deploy the application to your home serv
 
 If you're working localy then it's very convenient to just run `npx prisma db push` to just push the schema state to the db.
 Use `npx prisma generate` to push the schema changes to the client so that you can get type safety when you import the client.
+
+### Credit
+
+[Medieval portrait pack](https://jorbaa.itch.io/medieval-face-portraits) obtained from [Jorbaa](https://jorbaa.itch.io/)
