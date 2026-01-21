@@ -18,7 +18,9 @@ export interface DropZoneProps {
   worldId: string;
 }
 
-export async function getImageSize(blob: Blob) {
+export async function getImageSize(
+  blob: Blob,
+): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
 

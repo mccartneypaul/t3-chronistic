@@ -40,7 +40,9 @@ export interface ConstructSetIconProps {
   constructId: string;
 }
 
-export async function getImageSize(blob: Blob) {
+export async function getImageSize(
+  blob: Blob,
+): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const img = document.createElement("img");
 
@@ -66,6 +68,7 @@ export default function ConstructSetIcon(props: ConstructSetIconProps) {
   const createImage = api.image.createImage.useMutation();
   const uploadS3Image = api.s3.uploadImage.useMutation();
   const deleteS3Image = api.s3.deleteByKey.useMutation();
+  const deleteImage = api.image.deleteImage.useMutation();
   const [uploading, setUploading] = useState<boolean>(false);
   const addImage = useImageContext((state) => state.addImage);
   const setConstruct = useConstructContext((state) => state.setConstruct);
@@ -111,13 +114,28 @@ export default function ConstructSetIcon(props: ConstructSetIconProps) {
     const uint8Array = new Uint8Array(arrayBuffer);
 
     // Cleanup previous image from S3 if it exists
-    if (!!storeImage?.filePath && storeImage.filePath.length > 0) {
-      await deleteS3Image.mutateAsync(storeImage.filePath).catch((error) => {
-        console.error(
-          `Failed to delete previous image ${storeImage?.filePath}:`,
-          error,
-        );
-      });
+    if (
+      !!storeImage?.filePath &&
+      storeImage?.filePath.length > 0 &&
+      !!storeImage?.id
+    ) {
+      await deleteS3Image
+        .mutateAsync(storeImage?.filePath)
+        .then(() => {
+          return patchConstructImage.mutateAsync({
+            id: props.constructId,
+            imageId: null,
+          });
+        })
+        .then(() => {
+          return deleteImage.mutateAsync({ id: storeImage?.id });
+        })
+        .catch((error) => {
+          console.error(
+            `Failed to delete previous image ${storeImage?.id}:`,
+            error,
+          );
+        });
     }
 
     await uploadS3Image

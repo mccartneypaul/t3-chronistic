@@ -14,6 +14,7 @@ export const imageRouter = createTRPCRouter({
     return ctx.prisma.image.findFirst({
       where: {
         id: input,
+        userId: ctx.session.user.id,
       },
     });
   }),
@@ -60,6 +61,7 @@ export const imageRouter = createTRPCRouter({
       const image = await ctx.prisma.image.delete({
         where: {
           id: input.id,
+          userId: ctx.session.user.id,
         },
       });
       return image;

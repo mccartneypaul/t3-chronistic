@@ -96,7 +96,7 @@ export const constructRouter = createTRPCRouter({
     .input(
       zObject({
         id: zString(),
-        imageId: zString(),
+        imageId: zNullable(zString()),
       }),
     )
     .mutation(async ({ ctx, input }) => {
