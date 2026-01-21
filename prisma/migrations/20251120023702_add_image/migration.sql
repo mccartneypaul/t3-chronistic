@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "Construct" ADD COLUMN     "imageId" TEXT NOT NULL;
+ALTER TABLE "Construct" ADD COLUMN     "imageId" TEXT;
 
 -- AlterTable
 ALTER TABLE "Map" ADD COLUMN     "imageId" TEXT NOT NULL;
@@ -39,12 +39,15 @@ ALTER TABLE "Construct" ADD CONSTRAINT "Construct_imageId_fkey" FOREIGN KEY ("im
 ALTER TABLE "Image" ADD CONSTRAINT "Image_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- Migrate the image references to the image table
-INSERT INTO "Image" ("id", "filePath", "rawWidth", "rawHeight", "createdAt", "updatedAt")
+INSERT INTO "Image" ("id", "filePath", "rawWidth", "rawHeight", "userId", "createdAt", "updatedAt")
 SELECT
     gen_random_uuid(),
-    "filePath",
+    m."filePath",
+    0, -- You would need to get the actual width from the element... TODO: Fix
     0,
-    0,
+    u."id",
     NOW(),
     NOW()
-FROM "Map";
+FROM "Map" AS m
+LEFT JOIN "World" AS w ON m."worldId" = w."id"
+LEFT JOIN "User" AS u ON w."userId" = u."id";

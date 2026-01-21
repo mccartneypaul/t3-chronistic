@@ -1,7 +1,7 @@
 import {
   object as zObject,
   string as zString,
-  number as zNumber,
+  nullable as zNullable,
 } from "zod/v4";
 
 import {
@@ -36,7 +36,7 @@ export const constructRouter = createTRPCRouter({
         data: zObject({
           name: zString(),
           description: zString(),
-          imageId: zString(),
+          imageId: zNullable(zString()),
         }),
       }),
     )
@@ -88,6 +88,21 @@ export const constructRouter = createTRPCRouter({
       const construct = await ctx.prisma.construct.update({
         where: { id: input.id },
         data: { name: input.name },
+      });
+      return construct;
+    }),
+
+  patchImage: protectedProcedure
+    .input(
+      zObject({
+        id: zString(),
+        imageId: zString(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const construct = await ctx.prisma.construct.update({
+        where: { id: input.id },
+        data: { imageId: input.imageId },
       });
       return construct;
     }),
