@@ -4,7 +4,9 @@ import { PositionStoreProvider } from "@chronistic/providers/position-store-prov
 import { ImageStoreProvider } from "./image-store-provider";
 
 // Utility function to compose multiple providers
-function composeProviders(...providers: Array<React.ComponentType<any>>) {
+function composeProviders(
+  ...providers: Array<React.ComponentType<{ children: React.ReactNode }>>
+) {
   return providers.reduce(
     (AccumulatedProviders, CurrentProvider) => {
       const ComposedProvider = ({

@@ -9,9 +9,6 @@ import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { MainProvider } from "@chronistic/providers/main-provider";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -31,11 +28,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <MainProvider>
-      <QueryClientProvider client={queryClient}>
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
-      </QueryClientProvider>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </MainProvider>
   );
 };
