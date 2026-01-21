@@ -16,6 +16,9 @@ export default function Overview() {
   const { data: mapData } = api.map.getById.useQuery(mapId);
   const { data: constructData } = api.construct.getByMap.useQuery(mapId);
   const { data: positionData } = api.position.getByMap.useQuery(mapId);
+  const { data: imageData } = api.image.getById.useQuery(
+    mapData?.imageId ?? "",
+  );
 
   const { setMapConstructs } = useConstructContext((state) => ({
     setMapConstructs: state.setMapConstructs,
@@ -45,10 +48,10 @@ export default function Overview() {
   return (
     <div className="min-h-screen bg-slate-700">
       <div className="flex flex-col">
-        {mapData != undefined && (
+        {mapData != undefined && imageData != undefined && (
           <>
             <ResponsiveAppBar />
-            <OverviewMap mapUrl={mapData?.filePath} />
+            <OverviewMap mapUrl={imageData?.filePath} />
             <Timeline />
           </>
         )}
