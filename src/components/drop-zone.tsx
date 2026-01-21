@@ -34,6 +34,7 @@ export async function getImageSize(blob: Blob) {
     };
 
     img.src = URL.createObjectURL(blob);
+    img.remove();
   });
 }
 
