@@ -9,8 +9,9 @@ import { mapFromApi as mapMapFromApi } from "@chronistic/stores/map";
 import { useImageContext } from "@chronistic/providers/image-store-provider";
 import { mapFromApi as mapImageFromApi } from "@chronistic/stores/image";
 
-const MAX_FILE_SIZE_MB = 50;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const FILE_UPLOAD_SIZE_LIMIT =
+  Number(process.env.NEXT_PUBLIC_FILE_UPLOAD_SIZE_LIMIT) ?? 50;
+const MAX_FILE_SIZE_BYTES = FILE_UPLOAD_SIZE_LIMIT * 1024 * 1024;
 const MAX_IMAGE_COUNT = 3;
 
 export interface DropZoneProps {
@@ -48,7 +49,7 @@ export default function Dropzone(props: DropZoneProps) {
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return {
         code: "size-too-large",
-        message: `Image file is larger than ${MAX_FILE_SIZE_MB}MB.`,
+        message: `Image file is larger than ${FILE_UPLOAD_SIZE_LIMIT}MB.`,
       };
     }
     return null;
@@ -60,7 +61,7 @@ export default function Dropzone(props: DropZoneProps) {
   ) => {
     if (rejectedFiles.length > 0) {
       alert(
-        `You're trying to upload a file larger than ${MAX_FILE_SIZE_MB}MB. Please try again.`,
+        `You're trying to upload a file larger than ${FILE_UPLOAD_SIZE_LIMIT}MB. Please try again.`,
       );
       return;
     }
@@ -154,7 +155,7 @@ export default function Dropzone(props: DropZoneProps) {
           <p>Drop the files here ...</p>
         ) : (
           <p>
-            {`Drag and drop some files here, or click to select files (up to ${MAX_IMAGE_COUNT} images, max ${MAX_FILE_SIZE_MB}MB each)`}
+            {`Drag and drop some files here, or click to select files (up to ${MAX_IMAGE_COUNT} images, max ${FILE_UPLOAD_SIZE_LIMIT}MB each)`}
           </p>
         )}
       </div>
