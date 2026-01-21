@@ -77,9 +77,6 @@ export default function Dropzone(props: DropZoneProps) {
             width: number;
             height: number;
           };
-          console.log(
-            `Uploaded image dimensions for ${file.name}: ${width}x${height}`,
-          );
 
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
