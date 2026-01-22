@@ -24,6 +24,7 @@ export function AddConstructIcon() {
       name: "New Construct",
       description: "New Construct Description",
       mapId: activeMapId,
+      imageId: null,
       posX: clientX + NEW_CONSTRUCT_OFFSET,
       posY: clientY + NEW_CONSTRUCT_OFFSET,
     };

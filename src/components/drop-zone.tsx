@@ -5,10 +5,14 @@ import React, { useState } from "react";
 
 import { api } from "@chronistic/utils/api";
 import { useMapContext } from "@chronistic/providers/map-store-provider";
-import { mapFromApi } from "@chronistic/stores/map";
+import { mapFromApi as mapMapFromApi } from "@chronistic/stores/map";
+import { useImageContext } from "@chronistic/providers/image-store-provider";
+import { mapFromApi as mapImageFromApi } from "@chronistic/stores/image";
+import { getImageSize } from "@chronistic/utils/image";
 
-const MAX_FILE_SIZE_MB = 50;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const FILE_UPLOAD_SIZE_LIMIT =
+  Number(process.env.NEXT_PUBLIC_FILE_UPLOAD_SIZE_LIMIT) ?? 50;
+const MAX_FILE_SIZE_BYTES = FILE_UPLOAD_SIZE_LIMIT * 1024 * 1024;
 const MAX_IMAGE_COUNT = 3;
 
 export interface DropZoneProps {
@@ -17,15 +21,17 @@ export interface DropZoneProps {
 
 export default function Dropzone(props: DropZoneProps) {
   const createMap = api.map.createMap.useMutation();
+  const createImage = api.image.createImage.useMutation();
   const uploadImage = api.s3.uploadImage.useMutation();
   const [uploading, setUploading] = useState<boolean>(false);
   const addMap = useMapContext((state) => state.addMap);
+  const addImage = useImageContext((state) => state.addImage);
 
   const typeValidator = (file: File): FileError | null => {
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return {
         code: "size-too-large",
-        message: `Image file is larger than ${MAX_FILE_SIZE_MB}MB.`,
+        message: `Image file is larger than ${FILE_UPLOAD_SIZE_LIMIT}MB.`,
       };
     }
     return null;
@@ -37,7 +43,7 @@ export default function Dropzone(props: DropZoneProps) {
   ) => {
     if (rejectedFiles.length > 0) {
       alert(
-        `You're trying to upload a file larger than ${MAX_FILE_SIZE_MB}MB. Please try again.`,
+        `You're trying to upload a file larger than ${FILE_UPLOAD_SIZE_LIMIT}MB. Please try again.`,
       );
       return;
     }
@@ -47,6 +53,12 @@ export default function Dropzone(props: DropZoneProps) {
     try {
       for (const file of acceptedFiles) {
         try {
+          // Get the image's dimensions
+          const { width, height } = (await getImageSize(file)) as {
+            width: number;
+            height: number;
+          };
+
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
 
@@ -59,16 +71,28 @@ export default function Dropzone(props: DropZoneProps) {
               },
             })
             .then(() => {
-              createMap
+              createImage
                 .mutateAsync({
                   data: {
-                    name: file.name,
-                    worldId: props.worldId,
                     filePath: file.name,
+                    rawWidth: width,
+                    rawHeight: height,
                   },
                 })
-                .then((map) => {
-                  addMap(mapFromApi(map));
+                .then((image) => {
+                  addImage(mapImageFromApi(image));
+                  createMap
+                    .mutateAsync({
+                      data: {
+                        name: file.name,
+                        worldId: props.worldId,
+                        filePath: file.name,
+                        imageId: image.id,
+                      },
+                    })
+                    .then((map) => {
+                      addMap(mapMapFromApi(map));
+                    });
                 });
             })
             .catch((error) => {
@@ -110,7 +134,7 @@ export default function Dropzone(props: DropZoneProps) {
           <p>Drop the files here ...</p>
         ) : (
           <p>
-            {`Drag and drop some files here, or click to select files (up to ${MAX_IMAGE_COUNT} images, max ${MAX_FILE_SIZE_MB}MB each)`}
+            {`Drag and drop some files here, or click to select files (up to ${MAX_IMAGE_COUNT} images, max ${FILE_UPLOAD_SIZE_LIMIT}MB each)`}
           </p>
         )}
       </div>

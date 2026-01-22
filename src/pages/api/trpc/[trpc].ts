@@ -8,7 +8,7 @@ import { appRouter } from "@chronistic/server/api/root";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "10mb", // Set a higher limit - adjust as needed
+      sizeLimit: "50mb", // Set a higher limit - adjust as needed
     },
   },
 };

@@ -28,6 +28,7 @@ export const mapRouter = createTRPCRouter({
         data: zObject({
           name: zString(),
           filePath: zString(),
+          imageId: zString(),
           worldId: zString(),
         }),
       }),

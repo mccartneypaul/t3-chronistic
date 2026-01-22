@@ -12,6 +12,7 @@ import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 export interface MapIconProps {
   id: string;
+  imageId: string;
   name: string;
   description?: string;
   filePath: string;
@@ -21,6 +22,7 @@ export default function MapIcon(props: MapIconProps) {
   const { data: mapImage } = api.s3.getByKey.useQuery(props.filePath);
   const deleteMap = api.map.deleteMap.useMutation();
   const deleteMapImage = api.s3.deleteByKey.useMutation();
+  const deleteImage = api.image.deleteImage.useMutation();
   const removeMap = useMapContext((state) => state.removeMap);
 
   const setActiveMap = useMapContext((state) => state.setActiveMap);
@@ -28,6 +30,9 @@ export default function MapIcon(props: MapIconProps) {
   const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // TODO: Implement confirmation dialog before deletion
     deleteMapImage.mutateAsync(props.filePath).catch((error) => {
+      console.error(error);
+    });
+    deleteImage.mutateAsync({ id: props.imageId }).catch((error) => {
       console.error(error);
     });
     deleteMap

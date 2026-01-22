@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import Form from "next/form";
 import Typography from "@mui/material/Typography";
 import { useMapContext } from "@chronistic/providers/map-store-provider";
+import { useImageContext } from "@chronistic/providers/image-store-provider";
 
 export default function MapList() {
   const [worldId, setWorldId] = useState("");
@@ -21,6 +22,7 @@ export default function MapList() {
   }
 
   const storeMaps = useMapContext((state) => state.maps);
+  const storeImages = useImageContext((state) => state.images);
 
   useEffect(() => {
     if (worldData) {
@@ -86,14 +88,20 @@ export default function MapList() {
         }}
       >
         {worldId &&
-          storeMaps.map((card) => (
-            <MapIcon
-              key={card.id}
-              id={String(card.id)}
-              name={card.name}
-              filePath={card.filePath}
-            />
-          ))}
+          storeMaps.map((card) => {
+            const imageFilePath = storeImages.find(
+              (img) => img.id === card.imageId,
+            );
+            return (
+              <MapIcon
+                key={card.id}
+                imageId={card.imageId}
+                id={String(card.id)}
+                name={card.name}
+                filePath={imageFilePath?.filePath ?? "image-not-found"}
+              />
+            );
+          })}
         {worldId && <Dropzone worldId={worldId} />}
       </Box>
     </Suspense>

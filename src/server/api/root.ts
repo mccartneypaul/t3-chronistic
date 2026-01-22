@@ -4,6 +4,7 @@ import { mapRouter } from "@chronistic/server/api/routers/map";
 import { s3Router } from "@chronistic/server/api/routers/s3";
 import { worldRouter } from "./routers/world";
 import { positionRouter } from "./routers/position";
+import { imageRouter } from "./routers/image";
 
 /**
  * This is the primary router for your server.
@@ -12,6 +13,7 @@ import { positionRouter } from "./routers/position";
  */
 export const appRouter = createTRPCRouter({
   construct: constructRouter,
+  image: imageRouter,
   map: mapRouter,
   position: positionRouter,
   s3: s3Router,

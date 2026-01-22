@@ -54,6 +54,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   worlds        World[]
+  images        Image[]
 }
 
 model VerificationToken {
@@ -67,20 +68,24 @@ model VerificationToken {
 //------------------------
 // Chronistic objects
 //------------------------
+/// A World is a collection of Maps meant to contain the author's story world
 model World {
   id        String   @id @default(cuid())
   name      String
   map       Map[]
-  user      User     @relation(fields: [userId], references: [id]) // TODO: remove optionality
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+/// A map is a canvas for placing constructs at various positions
 model Map {
   id         String      @id @default(cuid())
   name       String
-  filePath   String
+  filePath   String   // TODO: remove this field later
+  image      Image       @relation(fields: [imageId], references: [id])
+  imageId    String
   world      World       @relation(fields: [worldId], references: [id])
   worldId    String
   positions  Position[]
@@ -88,17 +93,35 @@ model Map {
   updatedAt  DateTime    @updatedAt
 }
 
+/// A construct is an object meant to represent some thing within the author's story that has a position
 model Construct {
   id          String   @id @default(cuid())
   name        String
   description String
+  image       Image?    @relation(fields: [imageId], references: [id])
+  imageId     String?
   positions   Position[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
+/// An image is a file meant to be associated with constructs or maps
+model Image {
+  id        String   @id @default(cuid())
+  filePath  String
+  rawWidth  Int
+  rawHeight Int
+  construct Construct[]
+  map       Map[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Because Prisma does not support the interval type, all of the prisma generated stuff doesn't work
 // So instead we use dbgenerated to get the default values
+/// A position is the placement of a construct on a map at a given time interval from the beginning of the story
 model Position {
   id                    String   @id @default(dbgenerated("gen_random_uuid()"))
   map                   Map      @relation(fields: [mapId], references: [id])

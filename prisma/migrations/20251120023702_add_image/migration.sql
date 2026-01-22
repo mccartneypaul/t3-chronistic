@@ -1,0 +1,64 @@
+/*
+  Warnings:
+
+  - Added the required column `imageId` to the `Map` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- AlterTable
+ALTER TABLE "Construct" ADD COLUMN     "imageId" TEXT;
+
+-- AlterTable
+ALTER TABLE "Map" ADD COLUMN     "imageId" TEXT;
+
+-- AlterTable
+ALTER TABLE "Position" ALTER COLUMN "createdAt" SET DEFAULT now(),
+ALTER COLUMN "updatedAt" SET DEFAULT now(),
+ALTER COLUMN "intervalFromBeginning" SET DEFAULT '0 seconds'::interval;
+
+-- CreateTable
+CREATE TABLE "Image" (
+    "id" TEXT NOT NULL,
+    "filePath" TEXT NOT NULL,
+    "rawWidth" INTEGER NOT NULL,
+    "rawHeight" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Image_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Map" ADD CONSTRAINT "Map_imageId_fkey" FOREIGN KEY ("imageId") REFERENCES "Image"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Construct" ADD CONSTRAINT "Construct_imageId_fkey" FOREIGN KEY ("imageId") REFERENCES "Image"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Image" ADD CONSTRAINT "Image_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Migrate the image references to the image table
+INSERT INTO "Image" ("id", "filePath", "rawWidth", "rawHeight", "userId", "createdAt", "updatedAt")
+SELECT
+    gen_random_uuid(),
+    m."filePath",
+    0, -- You would need to get the actual width from the element... TODO: Fix
+    0,
+    u."id",
+    NOW(),
+    NOW()
+FROM "Map" AS m
+LEFT JOIN "World" AS w ON m."worldId" = w."id"
+LEFT JOIN "User" AS u ON w."userId" = u."id";
+
+-- Alter the Map table to set the imageId
+UPDATE "Map" AS mOrig
+SET "imageId" = i."id"
+FROM "Map" AS m
+INNER JOIN "World" AS w ON m."worldId" = w."id"
+INNER JOIN "User" AS u ON w."userId" = u."id"
+INNER JOIN "Image" AS i ON (m."filePath" = i."filePath" AND u."id" = i."userId")
+WHERE mOrig."id" = m."id";
+
+-- Alter the map table to set the imageId field to NOT NULL
+ALTER TABLE "Map" ALTER COLUMN "imageId" SET NOT NULL;
