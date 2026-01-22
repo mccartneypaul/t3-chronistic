@@ -1,7 +1,6 @@
 /*
   Warnings:
 
-  - Added the required column `imageId` to the `Construct` table without a default value. This is not possible if the table is not empty.
   - Added the required column `imageId` to the `Map` table without a default value. This is not possible if the table is not empty.
 
 */
@@ -9,7 +8,7 @@
 ALTER TABLE "Construct" ADD COLUMN     "imageId" TEXT;
 
 -- AlterTable
-ALTER TABLE "Map" ADD COLUMN     "imageId" TEXT NOT NULL;
+ALTER TABLE "Map" ADD COLUMN     "imageId" TEXT;
 
 -- AlterTable
 ALTER TABLE "Position" ALTER COLUMN "createdAt" SET DEFAULT now(),
@@ -51,3 +50,15 @@ SELECT
 FROM "Map" AS m
 LEFT JOIN "World" AS w ON m."worldId" = w."id"
 LEFT JOIN "User" AS u ON w."userId" = u."id";
+
+-- Alter the Map table to set the imageId
+UPDATE "Map" AS mOrig
+SET "imageId" = i."id"
+FROM "Map" AS m
+INNER JOIN "World" AS w ON m."worldId" = w."id"
+INNER JOIN "User" AS u ON w."userId" = u."id"
+INNER JOIN "Image" AS i ON (m."filePath" = i."filePath" AND u."id" = i."userId")
+WHERE mOrig."id" = m."id";
+
+-- Alter the map table to set the imageId field to NOT NULL
+ALTER TABLE "Map" ALTER COLUMN "imageId" SET NOT NULL;

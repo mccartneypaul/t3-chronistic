@@ -12,6 +12,7 @@ import { useMapContext } from "@chronistic/providers/map-store-provider";
 
 export interface MapIconProps {
   id: string;
+  imageId: string;
   name: string;
   description?: string;
   filePath: string;
@@ -31,7 +32,7 @@ export default function MapIcon(props: MapIconProps) {
     deleteMapImage.mutateAsync(props.filePath).catch((error) => {
       console.error(error);
     });
-    deleteImage.mutateAsync({ id: props.id }).catch((error) => {
+    deleteImage.mutateAsync({ id: props.imageId }).catch((error) => {
       console.error(error);
     });
     deleteMap

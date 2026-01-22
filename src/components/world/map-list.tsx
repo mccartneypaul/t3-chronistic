@@ -95,9 +95,10 @@ export default function MapList() {
             return (
               <MapIcon
                 key={card.id}
+                imageId={card.imageId}
                 id={String(card.id)}
                 name={card.name}
-                filePath={imageFilePath!.filePath}
+                filePath={imageFilePath?.filePath ?? "image-not-found"}
               />
             );
           })}

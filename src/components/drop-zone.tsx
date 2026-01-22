@@ -8,6 +8,7 @@ import { useMapContext } from "@chronistic/providers/map-store-provider";
 import { mapFromApi as mapMapFromApi } from "@chronistic/stores/map";
 import { useImageContext } from "@chronistic/providers/image-store-provider";
 import { mapFromApi as mapImageFromApi } from "@chronistic/stores/image";
+import { getImageSize } from "@chronistic/utils/image";
 
 const FILE_UPLOAD_SIZE_LIMIT =
   Number(process.env.NEXT_PUBLIC_FILE_UPLOAD_SIZE_LIMIT) ?? 50;
@@ -16,28 +17,6 @@ const MAX_IMAGE_COUNT = 3;
 
 export interface DropZoneProps {
   worldId: string;
-}
-
-export async function getImageSize(
-  blob: Blob,
-): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-
-    img.onload = () => {
-      resolve({
-        width: img.width,
-        height: img.height,
-      });
-    };
-
-    img.onerror = (error) => {
-      reject(error);
-    };
-
-    img.src = URL.createObjectURL(blob);
-    img.remove();
-  });
 }
 
 export default function Dropzone(props: DropZoneProps) {

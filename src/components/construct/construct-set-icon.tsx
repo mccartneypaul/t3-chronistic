@@ -11,6 +11,7 @@ import Badge, { badgeClasses } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
+import { getImageSize } from "@chronistic/utils/image";
 
 const FILE_UPLOAD_SIZE_LIMIT =
   Number(process.env.NEXT_PUBLIC_FILE_UPLOAD_SIZE_LIMIT) ?? 50;
@@ -29,38 +30,8 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const PlusBadge = styled(Badge)`
-  & .${badgeClasses.badge} {
-    top: -25px;
-    right: 30px;
-  }
-`;
-
 export interface ConstructSetIconProps {
   constructId: string;
-}
-
-export async function getImageSize(
-  blob: Blob,
-): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const img = document.createElement("img");
-
-    img.onload = () => {
-      resolve({
-        width: img.width,
-        height: img.height,
-      });
-    };
-
-    img.onerror = (error) => {
-      reject(error);
-    };
-
-    img.src = URL.createObjectURL(blob);
-
-    img.remove();
-  });
 }
 
 export default function ConstructSetIcon(props: ConstructSetIconProps) {
